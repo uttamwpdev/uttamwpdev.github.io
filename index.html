@@ -1,1 +1,1467 @@
-ZXZXZXZXZX
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Uttam Singh | Full-Stack WordPress & Shopify Developer</title>
+
+    <meta name="description"
+          content="Uttam Singh is a Full-Stack WordPress & Shopify Developer specializing in custom themes, plugins, WooCommerce, Shopify, CRM, APIs, security and performance optimization.">
+
+    <meta name="keywords"
+          content="Uttam Singh, WordPress Developer, Shopify Developer, Full Stack Developer, WooCommerce, PHP, MySQL, CRM Developer">
+
+    <meta name="author" content="Uttam Singh">
+
+    <style>
+        /* =========================
+           RESET
+        ========================== */
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: #0b1120;
+            color: #e5e7eb;
+            line-height: 1.6;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        img {
+            max-width: 100%;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: auto;
+        }
+
+        /* =========================
+           HEADER
+        ========================== */
+
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 999;
+            background: rgba(11, 17, 32, 0.92);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+        }
+
+        .navbar {
+            height: 75px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 800;
+            color: #fff;
+        }
+
+        .logo span {
+            color: #38bdf8;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: #cbd5e1;
+            font-size: 15px;
+            transition: 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: #38bdf8;
+        }
+
+        .menu-btn {
+            display: none;
+            font-size: 28px;
+            cursor: pointer;
+        }
+
+        /* =========================
+           HERO
+        ========================== */
+
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            padding-top: 80px;
+            background:
+                radial-gradient(circle at 80% 20%, rgba(56,189,248,0.15), transparent 30%),
+                radial-gradient(circle at 20% 80%, rgba(99,102,241,0.12), transparent 30%);
+        }
+
+        .hero-grid {
+            display: grid;
+            grid-template-columns: 1.3fr 1fr;
+            gap: 60px;
+            align-items: center;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 8px 15px;
+            border: 1px solid rgba(56,189,248,0.4);
+            border-radius: 30px;
+            color: #38bdf8;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+
+        .hero h1 {
+            font-size: clamp(42px, 6vw, 72px);
+            line-height: 1.05;
+            margin-bottom: 20px;
+            color: #fff;
+        }
+
+        .hero h1 span {
+            color: #38bdf8;
+        }
+
+        .hero h2 {
+            font-size: 24px;
+            font-weight: 500;
+            color: #94a3b8;
+            margin-bottom: 20px;
+        }
+
+        .hero p {
+            max-width: 650px;
+            color: #94a3b8;
+            font-size: 17px;
+            margin-bottom: 30px;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 13px 23px;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: 0.3s;
+        }
+
+        .btn-primary {
+            background: #38bdf8;
+            color: #07111f;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(56,189,248,0.2);
+        }
+
+        .btn-outline {
+            border: 1px solid #334155;
+            color: #e2e8f0;
+        }
+
+        .btn-outline:hover {
+            border-color: #38bdf8;
+            color: #38bdf8;
+        }
+
+        /* HERO CARD */
+
+        .hero-card {
+            background: linear-gradient(145deg, #111827, #0f172a);
+            border: 1px solid #1e293b;
+            border-radius: 20px;
+            padding: 35px;
+            box-shadow: 0 30px 80px rgba(0,0,0,0.3);
+        }
+
+        .profile-circle {
+            width: 130px;
+            height: 130px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #38bdf8, #6366f1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 25px;
+            font-size: 42px;
+            font-weight: 800;
+            color: #fff;
+        }
+
+        .hero-card h3 {
+            text-align: center;
+            font-size: 24px;
+            color: #fff;
+            margin-bottom: 8px;
+        }
+
+        .hero-card .role {
+            text-align: center;
+            color: #38bdf8;
+            margin-bottom: 25px;
+        }
+
+        .quick-info {
+            display: grid;
+            gap: 12px;
+        }
+
+        .quick-info div {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #1e293b;
+        }
+
+        .quick-info span:first-child {
+            color: #64748b;
+        }
+
+        .quick-info span:last-child {
+            color: #e2e8f0;
+            text-align: right;
+        }
+
+        /* =========================
+           SECTIONS
+        ========================== */
+
+        section {
+            padding: 100px 0;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .section-title small {
+            color: #38bdf8;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 700;
+        }
+
+        .section-title h2 {
+            font-size: 40px;
+            margin-top: 10px;
+            color: #fff;
+        }
+
+        .section-title p {
+            max-width: 650px;
+            margin: 15px auto 0;
+            color: #94a3b8;
+        }
+
+        /* =========================
+           ABOUT
+        ========================== */
+
+        .about-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 50px;
+        }
+
+        .about-text p {
+            color: #94a3b8;
+            margin-bottom: 18px;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .stat {
+            padding: 25px;
+            border: 1px solid #1e293b;
+            border-radius: 12px;
+            background: #0f172a;
+        }
+
+        .stat h3 {
+            color: #38bdf8;
+            font-size: 34px;
+        }
+
+        .stat p {
+            color: #94a3b8;
+        }
+
+        /* =========================
+           SKILLS
+        ========================== */
+
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .skill-card {
+            padding: 25px;
+            background: #0f172a;
+            border: 1px solid #1e293b;
+            border-radius: 12px;
+            transition: 0.3s;
+        }
+
+        .skill-card:hover {
+            transform: translateY(-5px);
+            border-color: #38bdf8;
+        }
+
+        .skill-card h3 {
+            margin-bottom: 15px;
+            color: #fff;
+        }
+
+        .skill-card p {
+            color: #94a3b8;
+        }
+
+        .skill-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .tag {
+            background: #172033;
+            color: #cbd5e1;
+            padding: 7px 11px;
+            border-radius: 6px;
+            font-size: 13px;
+        }
+
+        /* =========================
+           EXPERIENCE
+        ========================== */
+
+        .timeline {
+            max-width: 850px;
+            margin: auto;
+            position: relative;
+        }
+
+        .timeline::before {
+            content: "";
+            position: absolute;
+            left: 12px;
+            top: 0;
+            width: 2px;
+            height: 100%;
+            background: #1e293b;
+        }
+
+        .timeline-item {
+            position: relative;
+            padding-left: 45px;
+            margin-bottom: 45px;
+        }
+
+        .timeline-dot {
+            position: absolute;
+            left: 4px;
+            top: 5px;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #38bdf8;
+            border: 4px solid #0b1120;
+        }
+
+        .timeline-item h3 {
+            color: #fff;
+            font-size: 22px;
+        }
+
+        .timeline-item .date {
+            color: #38bdf8;
+            margin: 5px 0 10px;
+        }
+
+        .timeline-item p {
+            color: #94a3b8;
+        }
+
+        /* =========================
+           PROJECTS
+        ========================== */
+
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 25px;
+        }
+
+        .project {
+            background: #0f172a;
+            border: 1px solid #1e293b;
+            border-radius: 14px;
+            overflow: hidden;
+            transition: 0.3s;
+        }
+
+        .project:hover {
+            transform: translateY(-7px);
+            border-color: #38bdf8;
+        }
+
+        .project-image {
+            height: 180px;
+            background: linear-gradient(135deg, #172033, #1e293b);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            font-weight: 800;
+            color: #38bdf8;
+        }
+
+        .project-content {
+            padding: 25px;
+        }
+
+        .project-content h3 {
+            color: #fff;
+            margin-bottom: 10px;
+        }
+
+        .project-content p {
+            color: #94a3b8;
+            margin-bottom: 15px;
+        }
+
+        /* =========================
+           SERVICES
+        ========================== */
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .service {
+            padding: 30px;
+            border-radius: 14px;
+            border: 1px solid #1e293b;
+            background: #0f172a;
+        }
+
+        .service-icon {
+            font-size: 32px;
+            margin-bottom: 15px;
+        }
+
+        .service h3 {
+            color: #fff;
+            margin-bottom: 10px;
+        }
+
+        .service p {
+            color: #94a3b8;
+        }
+
+        /* =========================
+           CONTACT
+        ========================== */
+
+        .contact-box {
+            max-width: 800px;
+            margin: auto;
+            text-align: center;
+            padding: 50px;
+            border-radius: 18px;
+            background: linear-gradient(145deg, #111827, #0f172a);
+            border: 1px solid #1e293b;
+        }
+
+        .contact-box h2 {
+            font-size: 35px;
+            color: #fff;
+            margin-bottom: 15px;
+        }
+
+        .contact-box p {
+            color: #94a3b8;
+            margin-bottom: 25px;
+        }
+
+        .contact-links {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        /* =========================
+           FOOTER
+        ========================== */
+
+        footer {
+            padding: 30px 0;
+            border-top: 1px solid #1e293b;
+            text-align: center;
+            color: #64748b;
+        }
+
+        /* =========================
+           ANIMATION
+        ========================== */
+
+        .fade-up {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.7s ease;
+        }
+
+        .fade-up.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* =========================
+           MOBILE
+        ========================== */
+
+        @media (max-width: 900px) {
+
+            .hero-grid,
+            .about-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .skills-grid,
+            .projects-grid,
+            .services-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .hero-card {
+                max-width: 500px;
+                margin: auto;
+            }
+        }
+
+        @media (max-width: 650px) {
+
+            .container {
+                width: 92%;
+            }
+
+            .nav-links {
+                position: absolute;
+                top: 75px;
+                left: 0;
+                width: 100%;
+                background: #0b1120;
+                flex-direction: column;
+                padding: 25px;
+                display: none;
+                border-bottom: 1px solid #1e293b;
+            }
+
+            .nav-links.active {
+                display: flex;
+            }
+
+            .menu-btn {
+                display: block;
+            }
+
+            .skills-grid,
+            .projects-grid,
+            .services-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stats {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            section {
+                padding: 75px 0;
+            }
+
+            .section-title h2 {
+                font-size: 32px;
+            }
+
+            .contact-box {
+                padding: 30px 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- =========================
+     HEADER
+========================== -->
+
+<header>
+    <div class="container navbar">
+
+        <a href="#home" class="logo">
+            Uttam<span>.</span>
+        </a>
+
+        <nav>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#skills">Skills</a></li>
+                <li><a href="#experience">Experience</a></li>
+                <li><a href="#projects">Projects</a></li>
+                <li><a href="#services">Services</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </nav>
+
+        <div class="menu-btn" id="menuBtn">
+            ☰
+        </div>
+
+    </div>
+</header>
+
+
+<!-- =========================
+     HERO
+========================== -->
+
+<section class="hero" id="home">
+
+    <div class="container hero-grid">
+
+        <div class="fade-up">
+
+            <div class="badge">
+                Available for Remote / Full-Time Opportunities
+            </div>
+
+            <h1>
+                Hi, I'm <span>Uttam Singh</span>
+            </h1>
+
+            <h2>
+                Full-Stack WordPress & Shopify Developer
+            </h2>
+
+            <p>
+                I build custom WordPress websites, plugins, WooCommerce
+                stores, Shopify solutions, CRM systems and business
+                automation tools with a strong focus on performance,
+                security and scalability.
+            </p>
+
+            <div class="buttons">
+
+                <a href="#projects" class="btn btn-primary">
+                    View My Work
+                </a>
+
+                <a href="#contact" class="btn btn-outline">
+                    Contact Me
+                </a>
+
+            </div>
+
+        </div>
+
+
+        <div class="hero-card fade-up">
+
+            <div class="profile-circle">
+                US
+            </div>
+
+            <h3>Uttam Singh</h3>
+
+            <div class="role">
+                Full-Stack Developer
+            </div>
+
+            <div class="quick-info">
+
+                <div>
+                    <span>Experience</span>
+                    <span>14+ Years</span>
+                </div>
+
+                <div>
+                    <span>WordPress</span>
+                    <span>12+ Years</span>
+                </div>
+
+                <div>
+                    <span>Shopify</span>
+                    <span>2+ Years</span>
+                </div>
+
+                <div>
+                    <span>Specialization</span>
+                    <span>Custom Development</span>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================
+     ABOUT
+========================== -->
+
+<section id="about">
+
+    <div class="container">
+
+        <div class="section-title fade-up">
+
+            <small>About Me</small>
+
+            <h2>Building Digital Solutions</h2>
+
+            <p>
+                Experienced developer focused on custom development
+                rather than just installing ready-made solutions.
+            </p>
+
+        </div>
+
+
+        <div class="about-grid">
+
+            <div class="about-text fade-up">
+
+                <p>
+                    I am a Full-Stack WordPress and Shopify Developer
+                    with extensive experience building custom websites,
+                    eCommerce stores, plugins, themes, CRM systems and
+                    business portals.
+                </p>
+
+                <p>
+                    My work covers the complete development lifecycle —
+                    from UI implementation and backend development to
+                    APIs, databases, server configuration, security and
+                    performance optimization.
+                </p>
+
+                <p>
+                    I enjoy solving complex business requirements and
+                    converting them into practical, scalable web
+                    applications.
+                </p>
+
+            </div>
+
+
+            <div class="stats fade-up">
+
+                <div class="stat">
+                    <h3>14+</h3>
+                    <p>Years Technical Experience</p>
+                </div>
+
+                <div class="stat">
+                    <h3>12+</h3>
+                    <p>Years WordPress</p>
+                </div>
+
+                <div class="stat">
+                    <h3>2+</h3>
+                    <p>Years Shopify</p>
+                </div>
+
+                <div class="stat">
+                    <h3>∞</h3>
+                    <p>Custom Solutions</p>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================
+     SKILLS
+========================== -->
+
+<section id="skills">
+
+    <div class="container">
+
+        <div class="section-title fade-up">
+
+            <small>My Skills</small>
+
+            <h2>Technology Stack</h2>
+
+            <p>
+                Technologies and tools I use to build modern web solutions.
+            </p>
+
+        </div>
+
+
+        <div class="skills-grid">
+
+            <div class="skill-card fade-up">
+
+                <h3>WordPress</h3>
+
+                <div class="skill-tags">
+                    <span class="tag">Custom Themes</span>
+                    <span class="tag">Custom Plugins</span>
+                    <span class="tag">ACF</span>
+                    <span class="tag">Gutenberg</span>
+                    <span class="tag">Elementor</span>
+                    <span class="tag">WooCommerce</span>
+                </div>
+
+            </div>
+
+
+            <div class="skill-card fade-up">
+
+                <h3>Backend</h3>
+
+                <div class="skill-tags">
+                    <span class="tag">PHP</span>
+                    <span class="tag">MySQL</span>
+                    <span class="tag">REST API</span>
+                    <span class="tag">Webhooks</span>
+                    <span class="tag">JSON</span>
+                </div>
+
+            </div>
+
+
+            <div class="skill-card fade-up">
+
+                <h3>Shopify</h3>
+
+                <div class="skill-tags">
+                    <span class="tag">Liquid</span>
+                    <span class="tag">Dawn</span>
+                    <span class="tag">Custom Sections</span>
+                    <span class="tag">Metafields</span>
+                    <span class="tag">eCommerce</span>
+                </div>
+
+            </div>
+
+
+            <div class="skill-card fade-up">
+
+                <h3>Frontend</h3>
+
+                <div class="skill-tags">
+                    <span class="tag">HTML5</span>
+                    <span class="tag">CSS3</span>
+                    <span class="tag">JavaScript</span>
+                    <span class="tag">jQuery</span>
+                    <span class="tag">React Basics</span>
+                    <span class="tag">Vue Basics</span>
+                </div>
+
+            </div>
+
+
+            <div class="skill-card fade-up">
+
+                <h3>Server & DevOps</h3>
+
+                <div class="skill-tags">
+                    <span class="tag">cPanel</span>
+                    <span class="tag">Plesk</span>
+                    <span class="tag">DNS</span>
+                    <span class="tag">SSL</span>
+                    <span class="tag">WP-CLI</span>
+                </div>
+
+            </div>
+
+
+            <div class="skill-card fade-up">
+
+                <h3>Security & Optimization</h3>
+
+                <div class="skill-tags">
+                    <span class="tag">WordPress Security</span>
+                    <span class="tag">Performance</span>
+                    <span class="tag">Caching</span>
+                    <span class="tag">API Security</span>
+                    <span class="tag">Database Optimization</span>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================
+     EXPERIENCE
+========================== -->
+
+<section id="experience">
+
+    <div class="container">
+
+        <div class="section-title fade-up">
+
+            <small>Experience</small>
+
+            <h2>Professional Journey</h2>
+
+        </div>
+
+
+        <div class="timeline">
+
+            <div class="timeline-item fade-up">
+
+                <div class="timeline-dot"></div>
+
+                <h3>Full-Stack WordPress Developer</h3>
+
+                <div class="date">
+                    2015 – 2025
+                </div>
+
+                <p>
+                    Worked on custom WordPress development, WooCommerce,
+                    custom plugins, CRM systems, API integrations,
+                    server management, security and performance
+                    optimization.
+                </p>
+
+            </div>
+
+
+            <div class="timeline-item fade-up">
+
+                <div class="timeline-dot"></div>
+
+                <h3>WordPress Developer</h3>
+
+                <div class="date">
+                    Earlier Experience
+                </div>
+
+                <p>
+                    Developed and maintained WordPress websites,
+                    custom themes, plugins and eCommerce solutions
+                    for different business requirements.
+                </p>
+
+            </div>
+
+
+            <div class="timeline-item fade-up">
+
+                <div class="timeline-dot"></div>
+
+                <h3>Shopify Developer</h3>
+
+                <div class="date">
+                    Recent Experience
+                </div>
+
+                <p>
+                    Worked with Shopify Liquid, custom sections,
+                    product templates, metafields, eCommerce
+                    functionality and third-party integrations.
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================
+     PROJECTS
+========================== -->
+
+<section id="projects">
+
+    <div class="container">
+
+        <div class="section-title fade-up">
+
+            <small>Portfolio</small>
+
+            <h2>Featured Projects</h2>
+
+            <p>
+                A selection of web applications and business solutions.
+            </p>
+
+        </div>
+
+
+        <div class="projects-grid">
+
+
+            <div class="project fade-up">
+
+                <div class="project-image">
+                    CRM
+                </div>
+
+                <div class="project-content">
+
+                    <h3>Custom Lead Management CRM</h3>
+
+                    <p>
+                        Custom WordPress CRM for managing leads,
+                        statuses, reminders, Facebook leads and
+                        business workflows.
+                    </p>
+
+                    <div class="skill-tags">
+                        <span class="tag">WordPress</span>
+                        <span class="tag">PHP</span>
+                        <span class="tag">MySQL</span>
+                        <span class="tag">REST API</span>
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="project fade-up">
+
+                <div class="project-image">
+                    LOGISTICS
+                </div>
+
+                <div class="project-content">
+
+                    <h3>Logistics Booking Portal</h3>
+
+                    <p>
+                        Business logistics portal with sales reps,
+                        booking management, pricing calculations,
+                        driver assignment, PDF invoices and email
+                        automation.
+                    </p>
+
+                    <div class="skill-tags">
+                        <span class="tag">WordPress</span>
+                        <span class="tag">PHP</span>
+                        <span class="tag">JavaScript</span>
+                        <span class="tag">Google Maps</span>
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="project fade-up">
+
+                <div class="project-image">
+                    SHOPIFY
+                </div>
+
+                <div class="project-content">
+
+                    <h3>Shopify eCommerce Store</h3>
+
+                    <p>
+                        Custom Shopify development including Liquid
+                        templates, custom sections, product layouts,
+                        metafields and eCommerce integrations.
+                    </p>
+
+                    <div class="skill-tags">
+                        <span class="tag">Shopify</span>
+                        <span class="tag">Liquid</span>
+                        <span class="tag">JavaScript</span>
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="project fade-up">
+
+                <div class="project-image">
+                    WC
+                </div>
+
+                <div class="project-content">
+
+                    <h3>WooCommerce Store</h3>
+
+                    <p>
+                        Custom WooCommerce solutions with payment
+                        gateway integration, product management and
+                        custom checkout functionality.
+                    </p>
+
+                    <div class="skill-tags">
+                        <span class="tag">WooCommerce</span>
+                        <span class="tag">PHP</span>
+                        <span class="tag">Razorpay</span>
+                        <span class="tag">Stripe</span>
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="project fade-up">
+
+                <div class="project-image">
+                    API
+                </div>
+
+                <div class="project-content">
+
+                    <h3>API & Automation</h3>
+
+                    <p>
+                        Custom API integrations, webhooks and
+                        automation connecting websites with external
+                        services and business systems.
+                    </p>
+
+                    <div class="skill-tags">
+                        <span class="tag">REST API</span>
+                        <span class="tag">Webhooks</span>
+                        <span class="tag">JSON</span>
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="project fade-up">
+
+                <div class="project-image">
+                    AI
+                </div>
+
+                <div class="project-content">
+
+                    <h3>AI Web Functionality</h3>
+
+                    <p>
+                        Exploring and implementing AI-powered features
+                        to improve business workflows, automation and
+                        user experience.
+                    </p>
+
+                    <div class="skill-tags">
+                        <span class="tag">AI</span>
+                        <span class="tag">API</span>
+                        <span class="tag">Automation</span>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================
+     SERVICES
+========================== -->
+
+<section id="services">
+
+    <div class="container">
+
+        <div class="section-title fade-up">
+
+            <small>Services</small>
+
+            <h2>What I Can Build</h2>
+
+        </div>
+
+
+        <div class="services-grid">
+
+            <div class="service fade-up">
+
+                <div class="service-icon">◈</div>
+
+                <h3>Custom WordPress</h3>
+
+                <p>
+                    Custom themes, plugins, functionality and
+                    complete WordPress business websites.
+                </p>
+
+            </div>
+
+
+            <div class="service fade-up">
+
+                <div class="service-icon">◇</div>
+
+                <h3>WooCommerce</h3>
+
+                <p>
+                    eCommerce stores, payment gateways,
+                    custom checkout and WooCommerce development.
+                </p>
+
+            </div>
+
+
+            <div class="service fade-up">
+
+                <div class="service-icon">◆</div>
+
+                <h3>Shopify Development</h3>
+
+                <p>
+                    Shopify Liquid development, custom sections,
+                    templates and store customization.
+                </p>
+
+            </div>
+
+
+            <div class="service fade-up">
+
+                <div class="service-icon">⚙</div>
+
+                <h3>CRM Development</h3>
+
+                <p>
+                    Custom CRM systems, lead management,
+                    dashboards, reminders and automation.
+                </p>
+
+            </div>
+
+
+            <div class="service fade-up">
+
+                <div class="service-icon">↔</div>
+
+                <h3>API Integration</h3>
+
+                <p>
+                    REST APIs, webhooks and integrations with
+                    third-party business applications.
+                </p>
+
+            </div>
+
+
+            <div class="service fade-up">
+
+                <div class="service-icon">✓</div>
+
+                <h3>Security & Performance</h3>
+
+                <p>
+                    WordPress security hardening, optimization,
+                    caching and performance improvements.
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================
+     CONTACT
+========================== -->
+
+<section id="contact">
+
+    <div class="container">
+
+        <div class="contact-box fade-up">
+
+            <h2>Let's Work Together</h2>
+
+            <p>
+                Have a WordPress, Shopify, CRM or custom web
+                development project? Let's discuss it.
+            </p>
+
+            <div class="contact-links">
+
+                <!-- Replace these with your actual details -->
+
+                <a href="mailto:your@email.com"
+                   class="btn btn-primary">
+                    Email Me
+                </a>
+
+                <a href="https://www.linkedin.com/"
+                   target="_blank"
+                   class="btn btn-outline">
+                    LinkedIn
+                </a>
+
+                <a href="https://github.com/"
+                   target="_blank"
+                   class="btn btn-outline">
+                    GitHub
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================
+     FOOTER
+========================== -->
+
+<footer>
+
+    <div class="container">
+
+        <p>
+            © <span id="year"></span> Uttam Singh.
+            All Rights Reserved.
+        </p>
+
+    </div>
+
+</footer>
+
+
+<!-- =========================
+     JAVASCRIPT
+========================== -->
+
+<script>
+
+    // Mobile menu
+
+    const menuBtn = document.getElementById("menuBtn");
+    const navLinks = document.getElementById("navLinks");
+
+    menuBtn.addEventListener("click", function () {
+        navLinks.classList.toggle("active");
+    });
+
+
+    // Close mobile menu after clicking link
+
+    document.querySelectorAll(".nav-links a").forEach(function(link) {
+
+        link.addEventListener("click", function() {
+            navLinks.classList.remove("active");
+        });
+
+    });
+
+
+    // Current year
+
+    document.getElementById("year").textContent =
+        new Date().getFullYear();
+
+
+    // Scroll animation
+
+    const observer = new IntersectionObserver(
+        function(entries) {
+
+            entries.forEach(function(entry) {
+
+                if (entry.isIntersecting) {
+                    entry.target.classList.add("show");
+                }
+
+            });
+
+        },
+        {
+            threshold: 0.12
+        }
+    );
+
+
+    document.querySelectorAll(".fade-up").forEach(function(element) {
+        observer.observe(element);
+    });
+
+</script>
+
+</body>
+</html>
