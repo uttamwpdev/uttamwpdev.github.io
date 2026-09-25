@@ -323,8 +323,10 @@ html[data-theme="light"] .btn-primary{color:#fff}
     position:relative;
     padding:150px 0 90px;
     overflow:hidden;
+    isolation:isolate;
 }
 
+/* ---- Background stack ---- */
 .hero-bg{
     position:absolute;
     inset:0;
@@ -388,6 +390,58 @@ html[data-theme="light"] .orb-3{background:rgba(244,114,182,.16)}
     66%{transform:translate(36px,24px) scale(.94)}
 }
 
+/* ---- Falling code canvas ---- */
+#codeCanvas{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    display:block;
+    opacity:.72;
+    mix-blend-mode:screen;
+    transition:opacity .4s var(--ease), mix-blend-mode .4s var(--ease);
+}
+
+html[data-theme="light"] #codeCanvas{
+    opacity:.42;
+    mix-blend-mode:multiply;
+}
+
+/* ---- Readability veil over the code rain ---- */
+.hero-veil{
+    position:absolute;
+    inset:0;
+    pointer-events:none;
+    background:
+        radial-gradient(ellipse 62% 78% at 20% 46%,
+            color-mix(in srgb, var(--bg) 82%, transparent) 0%,
+            color-mix(in srgb, var(--bg) 45%, transparent) 42%,
+            transparent 72%),
+        radial-gradient(ellipse 40% 55% at 82% 50%,
+            color-mix(in srgb, var(--bg) 62%, transparent) 0%,
+            transparent 70%),
+        linear-gradient(180deg,
+            color-mix(in srgb, var(--bg) 55%, transparent) 0%,
+            transparent 22%,
+            transparent 62%,
+            var(--bg) 100%);
+}
+
+/* Faint scanlines for a terminal feel */
+.hero-scan{
+    position:absolute;
+    inset:0;
+    pointer-events:none;
+    background:repeating-linear-gradient(
+        to bottom,
+        rgba(255,255,255,.022) 0 1px,
+        transparent 1px 3px
+    );
+    opacity:.55;
+}
+
+html[data-theme="light"] .hero-scan{opacity:.28}
+
 .hero-grid{
     display:grid;
     grid-template-columns:1.15fr .85fr;
@@ -404,7 +458,9 @@ html[data-theme="light"] .orb-3{background:rgba(244,114,182,.16)}
     padding:7px 16px 7px 12px;
     border:1px solid var(--border-strong);
     border-radius:100px;
-    background:var(--accent-soft);
+    background:color-mix(in srgb, var(--accent-soft) 130%, transparent);
+    backdrop-filter:blur(6px);
+    -webkit-backdrop-filter:blur(6px);
     color:var(--accent);
     font-size:13.5px;
     font-weight:600;
@@ -434,6 +490,7 @@ html[data-theme="light"] .orb-3{background:rgba(244,114,182,.16)}
     letter-spacing:-1.8px;
     font-weight:800;
     margin-bottom:18px;
+    text-shadow:0 2px 30px color-mix(in srgb, var(--bg) 70%, transparent);
 }
 
 .grad{
@@ -443,6 +500,7 @@ html[data-theme="light"] .orb-3{background:rgba(244,114,182,.16)}
     background-clip:text;
     color:transparent;
     animation:gradShift 8s ease infinite;
+    filter:drop-shadow(0 0 26px rgba(56,189,248,.25));
 }
 
 @keyframes gradShift{
@@ -486,6 +544,7 @@ html[data-theme="light"] .orb-3{background:rgba(244,114,182,.16)}
     background:var(--accent);
     animation:blink 1s step-end infinite;
     border-radius:1px;
+    box-shadow:0 0 10px var(--accent);
 }
 
 @keyframes blink{50%{opacity:0}}
@@ -495,6 +554,7 @@ html[data-theme="light"] .orb-3{background:rgba(244,114,182,.16)}
     color:var(--muted);
     font-size:16.5px;
     margin-bottom:32px;
+    text-shadow:0 2px 24px color-mix(in srgb, var(--bg) 80%, transparent);
 }
 
 .hero p.lead strong{color:var(--text);font-weight:600}
@@ -528,7 +588,11 @@ html[data-theme="light"] .orb-3{background:rgba(244,114,182,.16)}
 /* HERO CARD */
 .hero-card{
     position:relative;
-    background:linear-gradient(160deg,var(--card),var(--card-2));
+    background:linear-gradient(160deg,
+        color-mix(in srgb, var(--card) 88%, transparent),
+        color-mix(in srgb, var(--card-2) 82%, transparent));
+    backdrop-filter:blur(14px);
+    -webkit-backdrop-filter:blur(14px);
     border:1px solid var(--border);
     border-radius:26px;
     padding:32px;
@@ -703,7 +767,7 @@ html[data-theme="light"] .orb-3{background:rgba(244,114,182,.16)}
 
 /* =========================================================
    SECTIONS
-   ========================================================= */
+========================== */
 section{padding:100px 0;position:relative;z-index:1}
 
 .section-head{
@@ -735,7 +799,7 @@ section{padding:100px 0;position:relative;z-index:1}
 
 /* =========================================================
    STATS
-   ========================================================= */
+========================== */
 .stats-band{
     display:grid;
     grid-template-columns:repeat(4,1fr);
@@ -786,7 +850,7 @@ section{padding:100px 0;position:relative;z-index:1}
 
 /* =========================================================
    ABOUT
-   ========================================================= */
+========================== */
 .about-grid{
     display:grid;
     grid-template-columns:1.05fr .95fr;
@@ -877,7 +941,7 @@ section{padding:100px 0;position:relative;z-index:1}
 
 /* =========================================================
    GRIDS
-   ========================================================= */
+========================== */
 .grid-3{
     display:grid;
     grid-template-columns:repeat(3,1fr);
@@ -886,7 +950,7 @@ section{padding:100px 0;position:relative;z-index:1}
 
 /* =========================================================
    CARDS (with spotlight)
-   ========================================================= */
+========================== */
 .card{
     position:relative;
     background:var(--card);
@@ -967,7 +1031,7 @@ section{padding:100px 0;position:relative;z-index:1}
 
 /* =========================================================
    SKILLS
-   ========================================================= */
+========================== */
 .skill-card h3{
     display:flex;
     align-items:center;
@@ -1006,7 +1070,6 @@ section{padding:100px 0;position:relative;z-index:1}
     transform:translateY(-2px);
 }
 
-/* Staggered tag pop-in when card reveals */
 .reveal.show .tag{
     animation:tagPop .55s var(--ease) backwards;
 }
@@ -1027,7 +1090,7 @@ section{padding:100px 0;position:relative;z-index:1}
 
 /* =========================================================
    EXPERIENCE
-   ========================================================= */
+========================== */
 .timeline{
     max-width:860px;
     margin:auto;
@@ -1102,7 +1165,7 @@ section{padding:100px 0;position:relative;z-index:1}
 
 /* =========================================================
    PROJECTS
-   ========================================================= */
+========================== */
 .filters{
     display:flex;
     justify-content:center;
@@ -1232,7 +1295,7 @@ html[data-theme="light"] .filter-btn.active{color:#fff}
 
 /* =========================================================
    TESTIMONIALS
-   ========================================================= */
+========================== */
 .quote{
     position:relative;
     background:var(--card);
@@ -1295,7 +1358,7 @@ html[data-theme="light"] .filter-btn.active{color:#fff}
 
 /* =========================================================
    CONTACT
-   ========================================================= */
+========================== */
 .contact-wrap{
     display:grid;
     grid-template-columns:1fr 1.1fr;
@@ -1425,7 +1488,7 @@ html[data-theme="light"] .filter-btn.active{color:#fff}
 
 /* =========================================================
    FOOTER
-   ========================================================= */
+========================== */
 footer{
     border-top:1px solid var(--border);
     padding:44px 0 34px;
@@ -1481,7 +1544,7 @@ footer{
 
 /* =========================================================
    BACK TO TOP
-   ========================================================= */
+========================== */
 #top{
     position:fixed;
     right:24px;bottom:24px;
@@ -1512,7 +1575,7 @@ footer{
 
 /* =========================================================
    REVEAL ANIMATION
-   ========================================================= */
+========================== */
 .js .reveal{
     opacity:0;
     transform:translateY(26px);
@@ -1529,7 +1592,7 @@ footer{
 
 /* =========================================================
    RESPONSIVE
-   ========================================================= */
+========================== */
 @media (max-width:1024px){
     .hero-grid{grid-template-columns:1fr;gap:46px}
     .hero-card{max-width:480px;margin-inline:auto}
@@ -1537,6 +1600,7 @@ footer{
     .grid-3,.projects-grid{grid-template-columns:repeat(2,1fr)}
     .contact-wrap{grid-template-columns:1fr}
     .stats-band{grid-template-columns:repeat(2,1fr)}
+    #codeCanvas{opacity:.55}
 }
 
 @media (max-width:820px){
@@ -1594,6 +1658,9 @@ footer{
     .footer-top{flex-direction:column;align-items:flex-start}
 
     #top{right:16px;bottom:16px}
+
+    /* code rain lighter on small screens */
+    #codeCanvas{opacity:.42}
 }
 
 @media (prefers-reduced-motion:reduce){
@@ -1653,12 +1720,19 @@ footer{
 ========================== -->
 <section class="hero" id="home">
 
+    <!-- ---- Background: orbs + falling code + veil ---- -->
     <div class="hero-bg" aria-hidden="true">
+
         <div class="orb-layer" id="orbLayer">
             <span class="orb orb-1"></span>
             <span class="orb orb-2"></span>
             <span class="orb orb-3"></span>
         </div>
+
+        <canvas id="codeCanvas"></canvas>
+
+        <div class="hero-veil"></div>
+        <div class="hero-scan"></div>
     </div>
 
     <div class="container hero-grid">
@@ -2507,7 +2581,232 @@ document.documentElement.classList.add('js');
         const next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
         root.setAttribute('data-theme', next);
         localStorage.setItem('theme', next);
+
+        // Let the code-rain know the theme changed
+        window.dispatchEvent(new CustomEvent('themechange', { detail: { theme: next } }));
     });
+})();
+
+/* =========================================================
+   FALLING CODE RAIN — PHP · MySQL · Shopify Liquid
+   ---------------------------------------------------------
+   Matrix-style rain where each falling character is pulled
+   from a real code alphabet made of PHP, SQL and Liquid
+   keywords / punctuation. The canvas stays transparent so
+   the orbs behind it still glow through.
+   ========================================================= */
+(function () {
+    const canvas = document.getElementById('codeCanvas');
+    if (!canvas) return;
+
+    const ctx = canvas.getContext('2d', { alpha: true });
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    /* ---- Source code samples (PHP + MySQL + Shopify Liquid) ---- */
+    const SOURCE = [
+        '<?php $query = "SELECT * FROM wp_posts WHERE post_status=\'publish\'";',
+        'foreach ($products as $product) { echo $product->get_price(); }',
+        'mysqli_query($conn, $sql); $wpdb->get_results($query);',
+        'INSERT INTO orders (id, total) VALUES (?, ?);',
+        'UPDATE inventory SET qty = qty - 1 WHERE sku = ?;',
+        'SELECT p.*, m.meta_value FROM posts p JOIN postmeta m;',
+        '{{ product.title | escape }} {% if cart.item_count > 0 %}',
+        '{% for item in cart.items %} shopify.cart.add(variantId);',
+        'add_action("init","my_func"); add_filter("the_content","x");',
+        'function render($args = []) { return new WP_Query($args); }',
+        '<?php echo wp_json_encode($data, JSON_UNESCAPED_SLASHES); ?>',
+        'DELETE FROM sessions WHERE expires_at < NOW();',
+        '{{ shop.name }} {% assign total = cart.total_price %}',
+        '$stmt = $pdo->prepare("SELECT id FROM users WHERE email = ?");'
+    ].join('');
+
+    /* Unique code-flavoured alphabet (no spaces) */
+    const CHARS = Array.from(new Set(SOURCE.split(''))).filter(c => c !== ' ').join('');
+
+    /* ---- Canvas setup ---- */
+    const FONT_SIZE = 15;
+    const LINE_H    = 17;     // vertical spacing between trail cells
+
+    let W = 0, H = 0, cols = 0, rows = 0;
+    let drops = [];
+    let dpr = 1;
+    let raf = null;
+    let lastDraw = 0;
+    const FRAME_INTERVAL = 1000 / 26;   // ~26 fps, smooth & light
+
+    /* ---- Palette (theme aware) ---- */
+    let palette = getPalette();
+
+    function getPalette() {
+        const dark = document.documentElement.getAttribute('data-theme') !== 'light';
+        return dark
+            ? {
+                head:     'rgba(196, 244, 255, 0.95)',
+                headGlow: 'rgba(56, 189, 248, 0.65)',
+                body:     'rgba(56, 189, 248, 0.52)',
+                tail:     'rgba(129, 140, 248, 0.38)',
+                fade:     0.085
+            }
+            : {
+                head:     'rgba(2, 132, 199, 0.88)',
+                headGlow: 'rgba(2, 132, 199, 0.35)',
+                body:     'rgba(2, 132, 199, 0.45)',
+                tail:     'rgba(99, 102, 241, 0.32)',
+                fade:     0.11
+            };
+    }
+
+    /* ---- Sizing ---- */
+    function resize() {
+        dpr = Math.min(window.devicePixelRatio || 1, 2);
+
+        const rect = canvas.getBoundingClientRect();
+        W = Math.max(1, rect.width);
+        H = Math.max(1, rect.height);
+
+        canvas.width  = Math.floor(W * dpr);
+        canvas.height = Math.floor(H * dpr);
+
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+        cols = Math.ceil(W / FONT_SIZE);
+        rows = Math.ceil(H / LINE_H);
+
+        // Each column starts at a random negative row so streams stagger
+        drops = new Array(cols).fill(0).map(() => Math.random() * -rows);
+    }
+
+    /* ---- Draw one frame ---- */
+    function draw(now) {
+        raf = requestAnimationFrame(draw);
+
+        if (now - lastDraw < FRAME_INTERVAL) return;
+        lastDraw = now;
+
+        /* Fade previous frame: reduce alpha instead of painting bg
+           → keeps the canvas transparent so orbs stay visible */
+        ctx.globalCompositeOperation = 'destination-out';
+        ctx.fillStyle = 'rgba(0, 0, 0, ' + palette.fade + ')';
+        ctx.fillRect(0, 0, W, H);
+
+        /* Draw new characters on top */
+        ctx.globalCompositeOperation = 'source-over';
+        ctx.font = FONT_SIZE + 'px "JetBrains Mono", ui-monospace, monospace';
+        ctx.textBaseline = 'top';
+
+        for (let i = 0; i < cols; i++) {
+            const x = i * FONT_SIZE;
+            const y = drops[i] * LINE_H;
+
+            const ch = CHARS[(Math.random() * CHARS.length) | 0];
+
+            /* Head character is brighter + glowing */
+            const isHead = Math.random() > 0.90;
+
+            if (isHead) {
+                ctx.shadowColor = palette.headGlow;
+                ctx.shadowBlur = 12;
+                ctx.fillStyle = palette.head;
+            } else {
+                ctx.shadowBlur = 0;
+                ctx.fillStyle = Math.random() > 0.6 ? palette.body : palette.tail;
+            }
+
+            ctx.fillText(ch, x, y);
+        }
+
+        ctx.shadowBlur = 0;
+
+        /* Advance each column's head; respawn at top randomly */
+        for (let i = 0; i < cols; i++) {
+            drops[i] += 0.45 + Math.random() * 0.55;
+
+            if (drops[i] * LINE_H > H && Math.random() > 0.975) {
+                drops[i] = -Math.random() * 6;
+            }
+        }
+    }
+
+    /* ---- Start / stop ---- */
+    function start() {
+        if (raf || reduced) return;
+        lastDraw = 0;
+        raf = requestAnimationFrame(draw);
+    }
+
+    function stop() {
+        if (raf) { cancelAnimationFrame(raf); raf = null; }
+    }
+
+    /* ---- Reduced-motion: draw a single static frame ---- */
+    function drawStatic() {
+        ctx.clearRect(0, 0, W, H);
+        ctx.font = FONT_SIZE + 'px "JetBrains Mono", ui-monospace, monospace';
+        ctx.textBaseline = 'top';
+        ctx.fillStyle = palette.body;
+
+        for (let i = 0; i < cols; i++) {
+            const start = Math.floor(Math.random() * rows * 0.7);
+            for (let j = start; j < Math.min(start + 6, rows); j++) {
+                const ch = CHARS[(Math.random() * CHARS.length) | 0];
+                ctx.fillText(ch, i * FONT_SIZE, j * LINE_H);
+            }
+        }
+    }
+
+    /* ---- Init ---- */
+    resize();
+
+    let resizeTimer = null;
+    window.addEventListener('resize', function () {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(function () {
+            const wasRunning = !!raf;
+            stop();
+            resize();
+            if (wasRunning && !reduced) start();
+            else if (reduced) drawStatic();
+        }, 140);
+    });
+
+    /* Theme changes → update palette */
+    window.addEventListener('themechange', function () {
+        palette = getPalette();
+        if (reduced) {
+            ctx.globalCompositeOperation = 'source-over';
+            drawStatic();
+        } else {
+            // Wipe trails so old-theme colours disappear
+            ctx.clearRect(0, 0, W, H);
+        }
+    });
+
+    /* Pause when the tab is hidden (saves CPU) */
+    document.addEventListener('visibilitychange', function () {
+        if (document.hidden) stop();
+        else start();
+    });
+
+    /* Only animate while the hero is on screen */
+    if ('IntersectionObserver' in window) {
+        const hero = document.getElementById('home');
+        const io = new IntersectionObserver(function (entries) {
+            entries.forEach(function (entry) {
+                if (reduced) return;
+                if (entry.isIntersecting) start();
+                else stop();
+            });
+        }, { threshold: 0 });
+        if (hero) io.observe(hero);
+    } else {
+        start();
+    }
+
+    if (reduced) {
+        drawStatic();
+    } else {
+        start();
+    }
 })();
 
 /* =========================================================
@@ -2524,9 +2823,9 @@ document.documentElement.classList.add('js');
         'Performance Engineer'
     ];
 
-    const TYPE_SPEED = 62;
+    const TYPE_SPEED  = 62;
     const ERASE_SPEED = 34;
-    const HOLD_TIME = 1600;
+    const HOLD_TIME   = 1600;
 
     let index = 0;
     let charIndex = 0;
@@ -2557,7 +2856,6 @@ document.documentElement.classList.add('js');
         return setTimeout(tick, ERASE_SPEED);
     }
 
-    // Respect reduced-motion users
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
         el.textContent = phrases[0];
         return;
@@ -2607,7 +2905,6 @@ document.documentElement.classList.add('js');
         header.classList.toggle('scrolled', scrollTop > 12);
         topBtn.classList.toggle('show', scrollTop > 500);
 
-        // Subtle parallax on hero orbs
         if (orbLayer && !reduced && scrollTop < 900) {
             const shift = scrollTop * 0.18;
             orbLayer.style.transform = 'translate3d(0,' + shift + 'px,0)';
