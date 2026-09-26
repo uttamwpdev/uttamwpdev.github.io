@@ -37,6 +37,8 @@
     --radius-sm:     12px;
     --max:           1180px;
     --ease:          cubic-bezier(.22,.61,.36,1);
+    --deal-ease:     cubic-bezier(.22,.9,.32,1);
+    --mini-h:        400px;
 }
 
 html[data-theme="light"]{
@@ -75,6 +77,8 @@ body{
     transition:background .4s var(--ease), color .4s var(--ease);
 }
 
+body.modal-open{overflow:hidden}
+
 body::before{
     content:"";
     position:fixed;
@@ -94,6 +98,7 @@ img{max-width:100%;display:block}
 a{color:inherit;text-decoration:none}
 ul{list-style:none}
 button,input,textarea{font:inherit;color:inherit}
+button{background:none;border:none;cursor:pointer}
 
 .container{
     width:min(92%, var(--max));
@@ -621,41 +626,133 @@ html[data-theme="light"] .hero-scan{opacity:.28}
     100%{background-position:0% 50%}
 }
 
+/* =========================================================
+   PROFILE PHOTO (hero card avatar)
+   ========================================================= */
 .avatar{
-    width:104px;height:104px;
-    margin:0 auto 20px;
+    position:relative;
+    width:170px;
+    height:170px;
+    margin:6px auto 22px;
     border-radius:50%;
-    display:grid;place-items:center;
-    font-size:32px;
+    display:grid;
+    place-items:center;
+    font-size:48px;
     font-weight:800;
     letter-spacing:-1px;
     color:#fff;
     background:linear-gradient(135deg,var(--accent),var(--accent-2));
     background-size:200% 200%;
-    box-shadow:0 0 0 6px var(--accent-soft),0 18px 40px rgba(56,189,248,.32);
-    position:relative;
-    animation:avatarFloat 5s ease-in-out infinite, btnGrad 8s ease infinite;
+    overflow:hidden;
+    isolation:isolate;
+    box-shadow:
+        0 0 0 5px color-mix(in srgb, var(--accent) 45%, transparent),
+        0 0 0 10px color-mix(in srgb, var(--accent) 12%, transparent),
+        0 24px 55px rgba(0,0,0,.55),
+        0 0 70px rgba(56,189,248,.35);
+    animation:avatarFloat 5s ease-in-out infinite, avatarGlow 5s ease-in-out infinite;
+    transition:transform .45s var(--ease), box-shadow .45s var(--ease);
 }
 
 @keyframes avatarFloat{
     0%,100%{transform:translateY(0)}
-    50%{transform:translateY(-6px)}
+    50%{transform:translateY(-8px)}
 }
 
-.avatar::after{
+@keyframes avatarGlow{
+    0%,100%{
+        box-shadow:
+            0 0 0 5px color-mix(in srgb, var(--accent) 45%, transparent),
+            0 0 0 10px color-mix(in srgb, var(--accent) 12%, transparent),
+            0 24px 55px rgba(0,0,0,.55),
+            0 0 70px rgba(56,189,248,.35);
+    }
+    50%{
+        box-shadow:
+            0 0 0 5px color-mix(in srgb, var(--accent) 65%, transparent),
+            0 0 0 12px color-mix(in srgb, var(--accent) 18%, transparent),
+            0 28px 60px rgba(0,0,0,.6),
+            0 0 100px rgba(56,189,248,.55);
+    }
+}
+
+.avatar:hover{
+    transform:translateY(-10px) scale(1.02);
+}
+
+.avatar::before{
     content:"";
     position:absolute;
-    right:6px;bottom:6px;
-    width:16px;height:16px;
+    inset:-3px;
+    border-radius:50%;
+    background:conic-gradient(
+        from 0deg,
+        transparent 0deg,
+        color-mix(in srgb, var(--accent) 90%, transparent) 60deg,
+        transparent 130deg,
+        transparent 200deg,
+        color-mix(in srgb, var(--accent-2) 90%, transparent) 260deg,
+        transparent 330deg
+    );
+    animation:ringSpin 9s linear infinite;
+    z-index:-1;
+    pointer-events:none;
+    opacity:.9;
+}
+
+@keyframes ringSpin{to{transform:rotate(360deg)}}
+
+.avatar-img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    object-position:center 22%;
+    border-radius:50%;
+    display:block;
+    position:relative;
+    z-index:1;
+    filter:grayscale(35%) contrast(1.05) brightness(1.02) saturate(.9);
+    transition:filter .5s var(--ease), transform .6s var(--ease);
+    -webkit-user-drag:none;
+    user-select:none;
+    pointer-events:none;
+    background:linear-gradient(135deg,var(--card),var(--card-2));
+}
+
+.avatar:hover .avatar-img{
+    filter:grayscale(0%) contrast(1.06) brightness(1.04) saturate(1);
+    transform:scale(1.05);
+}
+
+.avatar-fallback{
+    position:absolute;
+    inset:0;
+    display:grid;
+    place-items:center;
+    font-size:52px;
+    font-weight:800;
+    letter-spacing:-2px;
+    color:#fff;
+    z-index:0;
+}
+
+.avatar-status{
+    position:absolute;
+    right:10px;
+    bottom:10px;
+    width:24px;
+    height:24px;
     border-radius:50%;
     background:#22c55e;
-    border:3px solid var(--card);
+    border:4px solid var(--card);
+    box-shadow:0 0 0 0 rgba(34,197,94,.6), 0 0 18px rgba(34,197,94,.8);
     animation:pulse 2s infinite;
+    z-index:3;
 }
 
 .hero-card h3{
     text-align:center;
-    font-size:21px;
+    font-size:22px;
     font-weight:800;
     letter-spacing:-.4px;
 }
@@ -1030,8 +1127,13 @@ section{padding:100px 0;position:relative;z-index:1}
 .tree-wrap{
     position:relative;
     padding-top:10px;
-    --tree-line: color-mix(in srgb, var(--accent) 42%, transparent);
-    --tree-line-active: var(--accent);
+    --tree-line: rgba(56, 189, 248, 0.50);
+    --tree-line-active: #38bdf8;
+}
+
+html[data-theme="light"] .tree-wrap{
+    --tree-line: rgba(2, 132, 199, 0.50);
+    --tree-line-active: #0284c7;
 }
 
 .tree-svg{
@@ -1058,7 +1160,6 @@ section{padding:100px 0;position:relative;z-index:1}
     filter:drop-shadow(0 0 8px var(--accent));
 }
 
-/* --- Root --- */
 .tree-root{
     display:flex;
     justify-content:center;
@@ -1120,7 +1221,6 @@ html[data-theme="light"] .root-pulse{background:#fff}
     letter-spacing:.3px;
 }
 
-/* --- Branches grid --- */
 .tree-branches{
     display:grid;
     grid-template-columns:repeat(3,1fr);
@@ -1129,7 +1229,6 @@ html[data-theme="light"] .root-pulse{background:#fff}
     z-index:2;
 }
 
-/* --- Nodes --- */
 .tree-node{
     position:relative;
     background:var(--card);
@@ -1215,7 +1314,6 @@ html[data-theme="light"] .root-pulse{background:#fff}
     margin-bottom:14px;
 }
 
-/* expandable list */
 .node-list{
     display:grid;
     gap:7px;
@@ -1272,36 +1370,773 @@ html[data-theme="light"] .root-pulse{background:#fff}
     transition:transform .35s var(--ease);
 }
 
-.tree-node.active .node-toggle svg{
-    transform:rotate(180deg);
-}
-
-.tree-node.active .node-toggle{
-    color:var(--accent-2);
-}
+.tree-node.active .node-toggle svg{transform:rotate(180deg)}
+.tree-node.active .node-toggle{color:var(--accent-2)}
 
 /* =========================================================
-   SKILLS
+   SKILLS — PLAYING CARD HAND + CENTERED MODAL OVERLAY
    ========================================================= */
-.skill-card h3{
+.tech-stage{
     display:flex;
     align-items:center;
-    gap:10px;
-    font-size:16.5px;
+    justify-content:center;
+    min-height:520px;
+}
+
+.tech-hand{
+    flex:0 0 auto;
+    display:flex;
+    align-items:flex-end;
+    justify-content:center;
+    padding:44px 20px 26px;
+    position:relative;
+    z-index:2;
+    max-width:100%;
+}
+
+.mini-card{
+    position:relative;
+    width:230px;
+    height:var(--mini-h);
+    flex:0 0 auto;
+    margin-left:-96px;
+    padding:24px;
+    border-radius:18px;
+    background:linear-gradient(160deg, var(--card), var(--card-2));
+    border:1px solid var(--border);
+    overflow:hidden;
+    display:flex;
+    flex-direction:column;
+    cursor:pointer;
+    outline:none;
+    transform:
+        translateY(var(--fan-y, 0px))
+        rotate(var(--fan-r, 0deg));
+    transform-origin:50% 100%;
+    opacity:0;
+    transition:
+        opacity .95s var(--deal-ease),
+        transform .95s var(--deal-ease),
+        border-color .35s var(--ease),
+        box-shadow .4s var(--ease);
+    box-shadow:
+        0 22px 40px rgba(0,0,0,.38),
+        0 0 0 1px rgba(255,255,255,.02) inset;
+}
+
+.mini-card:first-child{margin-left:0}
+
+.mini-card::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    background-image:
+        linear-gradient(to right, var(--border) 1px, transparent 1px),
+        linear-gradient(to bottom, var(--border) 1px, transparent 1px);
+    background-size:22px 22px;
+    opacity:.45;
+    pointer-events:none;
+}
+
+.mini-card::after{
+    content:"";
+    position:absolute;
+    top:-60%;
+    left:-80%;
+    width:60%;
+    height:220%;
+    background:linear-gradient(120deg, transparent, rgba(56,189,248,.16), transparent);
+    transform:skewX(-22deg);
+    transition:left 1s var(--ease);
+    pointer-events:none;
+}
+
+.mini-card:hover::after{left:150%}
+
+.mini-card.dealt{opacity:1}
+
+.mini-card:hover,
+.mini-card:focus-visible{
+    transform:
+        translateY(calc(var(--fan-y, 0px) - 20px))
+        rotate(var(--fan-r, 0deg));
+    border-color:var(--accent);
+    box-shadow:
+        0 32px 60px rgba(0,0,0,.48),
+        0 0 40px rgba(56,189,248,.28);
+    z-index:30;
+}
+
+.mini-card.active{
+    transform:
+        translateY(calc(var(--fan-y, 0px) - 28px))
+        rotate(var(--fan-r, 0deg));
+    border-color:var(--accent);
+    box-shadow:
+        0 38px 70px rgba(0,0,0,.52),
+        0 0 55px rgba(56,189,248,.45),
+        0 0 0 2px var(--accent) inset;
+    z-index:35;
+}
+
+.mini-top{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    position:relative;
+    z-index:1;
     margin-bottom:18px;
 }
 
-.skill-card h3 .num{
+.mini-num,
+.mini-pip{
     font-family:'JetBrains Mono',monospace;
-    font-size:12px;
+    font-size:13px;
+    font-weight:700;
+    letter-spacing:.7px;
     color:var(--accent);
-    opacity:.85;
-    padding:2px 8px;
+    opacity:.9;
+    line-height:1;
+}
+
+.mini-pip{
+    padding:4px 8px;
+    border:1px solid color-mix(in srgb, var(--accent) 45%, transparent);
     border-radius:6px;
+    background:color-mix(in srgb, var(--accent) 10%, transparent);
+    font-size:11.5px;
+}
+
+.mini-icon{
+    flex:1;
+    display:grid;
+    place-items:center;
+    position:relative;
+    z-index:1;
+}
+
+.mini-icon svg{
+    width:64px;
+    height:64px;
+    stroke:var(--accent);
+    fill:none;
+    stroke-width:1.5;
+    stroke-linecap:round;
+    stroke-linejoin:round;
+    transition:transform .5s var(--ease), filter .5s var(--ease);
+    filter:drop-shadow(0 0 16px rgba(56,189,248,.3));
+}
+
+.mini-card:hover .mini-icon svg,
+.mini-card.active .mini-icon svg{
+    transform:scale(1.12) rotate(-6deg);
+    filter:drop-shadow(0 0 28px rgba(56,189,248,.6));
+}
+
+.mini-bottom{
+    position:relative;
+    z-index:1;
+    margin-top:18px;
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+}
+
+.mini-title{
+    font-size:19px;
+    font-weight:800;
+    letter-spacing:-.4px;
+    color:var(--text);
+    line-height:1.2;
+}
+
+.mini-sub{
+    font-size:11.5px;
+    font-weight:600;
+    color:var(--muted);
+    letter-spacing:.4px;
+    text-transform:uppercase;
+    line-height:1.35;
+}
+
+.mini-bottom-pip{
+    position:absolute;
+    bottom:24px;
+    right:24px;
+    transform:rotate(180deg);
+    font-family:'JetBrains Mono',monospace;
+    font-size:11.5px;
+    font-weight:700;
+    color:var(--accent);
+    opacity:.55;
+    z-index:1;
+}
+
+/* =========================================================
+   CENTERED MODAL OVERLAY
+   ========================================================= */
+.tech-modal{
+    position:fixed;
+    inset:0;
+    z-index:1200;
+    display:grid;
+    place-items:center;
+    padding:24px;
+    visibility:hidden;
+    opacity:0;
+    pointer-events:none;
+    transition:
+        opacity .35s var(--ease),
+        visibility 0s linear .35s;
+}
+
+.tech-modal.open{
+    visibility:visible;
+    opacity:1;
+    pointer-events:auto;
+    transition:
+        opacity .35s var(--ease),
+        visibility 0s linear 0s;
+}
+
+.tech-modal-backdrop{
+    position:absolute;
+    inset:0;
+    background:color-mix(in srgb, var(--bg) 78%, transparent);
+    backdrop-filter:blur(14px);
+    -webkit-backdrop-filter:blur(14px);
+    cursor:pointer;
+    opacity:0;
+    transition:opacity .35s var(--ease);
+}
+
+.tech-modal.open .tech-modal-backdrop{
+    opacity:1;
+}
+
+.tech-modal-shell{
+    position:relative;
+    width:min(720px, 100%);
+    max-height:min(88vh, 780px);
+    z-index:1;
+    transform:translateY(30px) scale(.94);
+    opacity:0;
+    transition:
+        transform .55s cubic-bezier(.22,.9,.32,1),
+        opacity .45s var(--ease);
+}
+
+.tech-modal.open .tech-modal-shell{
+    transform:translateY(0) scale(1);
+    opacity:1;
+}
+
+.detail-card{
+    position:relative;
+    height:100%;
+    max-height:min(88vh, 780px);
+    padding:42px;
+    border-radius:24px;
+    background:
+        radial-gradient(circle at 15% 12%, color-mix(in srgb, var(--accent) 14%, transparent), transparent 45%),
+        radial-gradient(circle at 90% 90%, color-mix(in srgb, var(--accent-2) 14%, transparent), transparent 45%),
+        linear-gradient(160deg, var(--card), var(--card-2));
+    border:1px solid var(--border);
+    box-shadow:var(--shadow);
+    overflow-y:auto;
+    display:flex;
+    flex-direction:column;
+    scrollbar-width:thin;
+    scrollbar-color:var(--border-strong) transparent;
+}
+
+.detail-card::-webkit-scrollbar{width:6px}
+.detail-card::-webkit-scrollbar-thumb{background:var(--border-strong);border-radius:6px}
+
+.detail-card::before{
+    content:"";
+    position:absolute;
+    inset:-1px;
+    border-radius:24px;
+    padding:1px;
+    background:linear-gradient(140deg,
+        color-mix(in srgb, var(--accent) 55%, transparent),
+        transparent 45%,
+        color-mix(in srgb, var(--accent-2) 55%, transparent));
+    background-size:200% 200%;
+    -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
+    -webkit-mask-composite:xor;
+    mask-composite:exclude;
+    pointer-events:none;
+    animation:borderSpin 8s linear infinite;
+}
+
+.detail-card::after{
+    content:"";
+    position:absolute;
+    inset:0;
+    background-image:
+        linear-gradient(to right, var(--border) 1px, transparent 1px),
+        linear-gradient(to bottom, var(--border) 1px, transparent 1px);
+    background-size:34px 34px;
+    opacity:.28;
+    pointer-events:none;
+    mask-image:radial-gradient(ellipse 80% 80% at 50% 50%, #000 30%, transparent 90%);
+    -webkit-mask-image:radial-gradient(ellipse 80% 80% at 50% 50%, #000 30%, transparent 90%);
+}
+
+.detail-card > *{position:relative;z-index:1}
+
+.detail-close{
+    position:absolute;
+    top:20px;
+    right:20px;
+    width:42px;
+    height:42px;
+    display:grid;
+    place-items:center;
+    border-radius:12px;
+    border:1px solid var(--border);
+    background:var(--card);
+    color:var(--muted);
+    cursor:pointer;
+    transition:.28s var(--ease);
+    z-index:4;
+}
+
+.detail-close:hover{
+    border-color:var(--accent);
+    color:var(--accent);
+    transform:rotate(90deg);
     background:var(--accent-soft);
 }
 
-.tags{display:flex;flex-wrap:wrap;gap:8px}
+.detail-close svg{
+    width:18px;
+    height:18px;
+    stroke:currentColor;
+    fill:none;
+    stroke-width:2;
+    stroke-linecap:round;
+    stroke-linejoin:round;
+}
+
+.detail-head{
+    display:flex;
+    align-items:center;
+    gap:22px;
+    margin-bottom:24px;
+    padding-right:56px;
+}
+
+.detail-icon{
+    width:82px;
+    height:82px;
+    flex-shrink:0;
+    display:grid;
+    place-items:center;
+    border-radius:22px;
+    background:linear-gradient(135deg,var(--accent),var(--accent-2));
+    color:#fff;
+    box-shadow:0 16px 38px rgba(56,189,248,.42);
+    animation:detailIconIn .6s var(--deal-ease) backwards .15s;
+}
+
+@keyframes detailIconIn{
+    from{transform:scale(.4) rotate(-30deg);opacity:0}
+    to{transform:scale(1) rotate(0);opacity:1}
+}
+
+.detail-icon svg{
+    width:40px;
+    height:40px;
+    stroke:currentColor;
+    fill:none;
+    stroke-width:1.7;
+    stroke-linecap:round;
+    stroke-linejoin:round;
+}
+
+.detail-num{
+    font-family:'JetBrains Mono',monospace;
+    font-size:12.5px;
+    font-weight:700;
+    letter-spacing:1.8px;
+    color:var(--accent);
+    opacity:.9;
+    margin-bottom:5px;
+}
+
+.detail-title{
+    font-size:32px;
+    font-weight:800;
+    letter-spacing:-1px;
+    line-height:1.1;
+    margin-bottom:6px;
+}
+
+.detail-sub{
+    font-size:13.5px;
+    font-weight:600;
+    color:var(--muted);
+    letter-spacing:.4px;
+    text-transform:uppercase;
+}
+
+.detail-desc{
+    color:var(--muted);
+    font-size:16px;
+    line-height:1.78;
+    margin-bottom:26px;
+}
+
+.detail-tags{
+    display:flex;
+    flex-wrap:wrap;
+    gap:9px;
+    margin-bottom:28px;
+}
+
+.detail-tag{
+    background:var(--accent-soft);
+    border:1px solid color-mix(in srgb, var(--accent) 35%, transparent);
+    color:var(--text);
+    padding:8px 15px;
+    border-radius:10px;
+    font-size:13px;
+    font-weight:600;
+    transition:.25s var(--ease);
+    animation:tagRise .5s var(--deal-ease) backwards;
+}
+
+.detail-tag:nth-child(1){animation-delay:.22s}
+.detail-tag:nth-child(2){animation-delay:.26s}
+.detail-tag:nth-child(3){animation-delay:.30s}
+.detail-tag:nth-child(4){animation-delay:.34s}
+.detail-tag:nth-child(5){animation-delay:.38s}
+.detail-tag:nth-child(6){animation-delay:.42s}
+.detail-tag:nth-child(7){animation-delay:.46s}
+
+@keyframes tagRise{
+    from{opacity:0;transform:translateY(10px)}
+    to{opacity:1;transform:none}
+}
+
+.detail-tag:hover{
+    background:linear-gradient(135deg,var(--accent),var(--accent-2));
+    color:#04101f;
+    border-color:transparent;
+    transform:translateY(-2px);
+}
+
+html[data-theme="light"] .detail-tag:hover{color:#fff}
+
+.detail-stats{
+    display:flex;
+    gap:16px;
+    margin-top:auto;
+    padding-top:22px;
+    border-top:1px solid var(--border);
+    animation:statsRise .55s var(--deal-ease) backwards .4s;
+}
+
+@keyframes statsRise{
+    from{opacity:0;transform:translateY(14px)}
+    to{opacity:1;transform:none}
+}
+
+.detail-stat{
+    flex:1;
+    padding:18px 22px;
+    border-radius:16px;
+    background:color-mix(in srgb, var(--bg) 40%, transparent);
+    border:1px solid var(--border);
+    transition:.3s var(--ease);
+}
+
+.detail-stat:hover{
+    border-color:var(--accent);
+    transform:translateY(-3px);
+    background:var(--accent-soft);
+}
+
+.detail-stat b{
+    display:block;
+    font-size:23px;
+    font-weight:800;
+    letter-spacing:-.6px;
+    background:linear-gradient(120deg,var(--accent),var(--accent-2));
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+    line-height:1.1;
+    margin-bottom:5px;
+}
+
+.detail-stat small{
+    font-size:12px;
+    font-weight:600;
+    color:var(--muted);
+    text-transform:uppercase;
+    letter-spacing:.7px;
+}
+
+.deck-hint{
+    text-align:center;
+    font-size:12.8px;
+    color:var(--muted);
+    margin-top:24px;
+    font-weight:500;
+}
+
+.deck-hint kbd{
+    font-family:'JetBrains Mono',monospace;
+    font-size:11.5px;
+    background:var(--card);
+    border:1px solid var(--border);
+    padding:2px 7px;
+    border-radius:5px;
+    color:var(--accent);
+    margin:0 2px;
+}
+
+/* =========================================================
+   EXPERIENCE — VERTICAL TREE
+   ========================================================= */
+.exp-tree{
+    position:relative;
+    max-width:1000px;
+    margin:auto;
+    padding:20px 0;
+}
+
+.exp-svg{
+    position:absolute;
+    top:0;left:0;
+    width:100%;
+    height:100%;
+    pointer-events:none;
+    z-index:1;
+    overflow:visible;
+}
+
+.exp-svg path{
+    fill:none;
+    stroke:rgba(56, 189, 248, 0.55);
+    stroke-width:1.8;
+    stroke-linecap:round;
+    stroke-linejoin:round;
+}
+
+.exp-svg path.spine{
+    stroke:rgba(56, 189, 248, 0.42);
+    stroke-width:2;
+}
+
+.exp-svg path.connector{
+    stroke:rgba(56, 189, 248, 0.60);
+}
+
+html[data-theme="light"] .exp-svg path{stroke:rgba(2, 132, 199, 0.55)}
+html[data-theme="light"] .exp-svg path.spine{stroke:rgba(2, 132, 199, 0.42)}
+html[data-theme="light"] .exp-svg path.connector{stroke:rgba(2, 132, 199, 0.60)}
+
+.exp-item{
+    display:grid;
+    grid-template-columns:1fr 90px 1fr;
+    align-items:center;
+    min-height:200px;
+    position:relative;
+    z-index:2;
+    padding:14px 0;
+}
+
+.exp-item .exp-node{
+    grid-column:2;
+    grid-row:1;
+}
+
+.exp-item[data-side="left"] .exp-card{
+    grid-column:1;
+    grid-row:1;
+}
+
+.exp-item[data-side="right"] .exp-card{
+    grid-column:3;
+    grid-row:1;
+}
+
+.exp-node{
+    display:grid;
+    place-items:center;
+    position:relative;
+    z-index:3;
+}
+
+.exp-node-inner{
+    position:relative;
+    width:22px;height:22px;
+    border-radius:50%;
+    background:var(--bg);
+    border:2px solid var(--accent);
+    display:grid;
+    place-items:center;
+    box-shadow:0 0 0 6px color-mix(in srgb, var(--accent) 12%, transparent);
+    transition:transform .45s var(--ease), box-shadow .45s var(--ease);
+}
+
+.exp-node-inner::after{
+    content:"";
+    width:8px;height:8px;
+    border-radius:50%;
+    background:var(--accent);
+    box-shadow:0 0 12px var(--accent);
+    animation:pulse 2.4s infinite;
+}
+
+.exp-item.in-view .exp-node-inner{
+    box-shadow:0 0 0 8px color-mix(in srgb, var(--accent) 16%, transparent),
+                0 0 24px color-mix(in srgb, var(--accent) 55%, transparent);
+}
+
+.exp-item:hover .exp-node-inner{
+    transform:scale(1.15);
+    box-shadow:0 0 0 10px color-mix(in srgb, var(--accent) 20%, transparent),
+                0 0 32px color-mix(in srgb, var(--accent) 70%, transparent);
+}
+
+.exp-card{
+    position:relative;
+    background:linear-gradient(160deg, var(--card), var(--card-2));
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    padding:28px;
+    box-shadow:var(--shadow-sm);
+    overflow:hidden;
+    opacity:0;
+    transition:opacity .8s var(--ease),
+               transform .85s cubic-bezier(.22,.61,.36,1),
+               border-color .35s var(--ease),
+               box-shadow .35s var(--ease);
+    will-change:transform, opacity;
+}
+
+.exp-item[data-side="left"] .exp-card{
+    transform:translateX(-60px);
+}
+
+.exp-item[data-side="right"] .exp-card{
+    transform:translateX(60px);
+}
+
+.exp-item.in-view .exp-card{
+    opacity:1;
+    transform:translateX(0);
+}
+
+.exp-card:hover{
+    border-color:var(--accent);
+    box-shadow:var(--shadow);
+    transform:translateY(-4px) !important;
+}
+
+.exp-card::before{
+    content:"";
+    position:absolute;
+    top:22px;
+    bottom:22px;
+    width:3px;
+    border-radius:3px;
+    background:linear-gradient(180deg, var(--accent), var(--accent-2));
+    opacity:.85;
+    transition:top .35s var(--ease), bottom .35s var(--ease);
+}
+
+.exp-item[data-side="left"] .exp-card::before{
+    right:0;
+    border-top-left-radius:0;
+    border-bottom-left-radius:0;
+}
+
+.exp-item[data-side="right"] .exp-card::before{
+    left:0;
+    border-top-right-radius:0;
+    border-bottom-right-radius:0;
+}
+
+.exp-card:hover::before{
+    top:12px;
+    bottom:12px;
+}
+
+.exp-card::after{
+    content:"";
+    position:absolute;
+    top:-60px;
+    width:180px;height:180px;
+    border-radius:50%;
+    background:radial-gradient(circle, var(--accent-soft), transparent 70%);
+    opacity:.6;
+    pointer-events:none;
+    transition:opacity .4s var(--ease);
+}
+
+.exp-item[data-side="left"] .exp-card::after{right:-60px}
+.exp-item[data-side="right"] .exp-card::after{left:-60px}
+
+.exp-card:hover::after{opacity:1}
+
+.exp-card > *{position:relative;z-index:1}
+
+.exp-date{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    font-family:'JetBrains Mono',monospace;
+    font-size:12.5px;
+    font-weight:600;
+    color:var(--accent);
+    background:var(--accent-soft);
+    padding:5px 13px;
+    border-radius:100px;
+    letter-spacing:.4px;
+    margin-bottom:14px;
+}
+
+.exp-date::before{
+    content:"";
+    width:7px;height:7px;
+    border-radius:50%;
+    background:var(--accent);
+    box-shadow:0 0 8px var(--accent);
+}
+
+.exp-card h3{
+    font-size:20px;
+    font-weight:800;
+    letter-spacing:-.5px;
+    margin-bottom:6px;
+}
+
+.exp-card .exp-role{
+    font-size:13.5px;
+    font-weight:600;
+    color:var(--muted);
+    margin-bottom:14px;
+    letter-spacing:.2px;
+}
+
+.exp-card p{
+    color:var(--muted);
+    font-size:14.6px;
+    margin-bottom:18px;
+}
+
+.exp-tags{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+}
 
 .tag{
     background:var(--card-2);
@@ -1320,99 +2155,6 @@ html[data-theme="light"] .root-pulse{background:#fff}
     background:var(--accent-soft);
     transform:translateY(-2px);
 }
-
-.reveal.show .tag{
-    animation:tagPop .55s var(--ease) backwards;
-}
-
-.reveal.show .tag:nth-child(1){animation-delay:.04s}
-.reveal.show .tag:nth-child(2){animation-delay:.08s}
-.reveal.show .tag:nth-child(3){animation-delay:.12s}
-.reveal.show .tag:nth-child(4){animation-delay:.16s}
-.reveal.show .tag:nth-child(5){animation-delay:.20s}
-.reveal.show .tag:nth-child(6){animation-delay:.24s}
-.reveal.show .tag:nth-child(7){animation-delay:.28s}
-.reveal.show .tag:nth-child(8){animation-delay:.32s}
-
-@keyframes tagPop{
-    from{opacity:0;transform:translateY(8px) scale(.92)}
-    to{opacity:1;transform:none}
-}
-
-/* =========================================================
-   EXPERIENCE
-   ========================================================= */
-.timeline{
-    max-width:860px;
-    margin:auto;
-    position:relative;
-    padding-left:38px;
-}
-
-.timeline::before{
-    content:"";
-    position:absolute;
-    left:9px;top:8px;
-    bottom:8px;
-    width:2px;
-    background:linear-gradient(180deg,var(--accent),var(--accent-2),transparent);
-    opacity:.35;
-}
-
-.tl-item{position:relative;padding-bottom:44px}
-.tl-item:last-child{padding-bottom:0}
-
-.tl-dot{
-    position:absolute;
-    left:-38px;top:6px;
-    width:20px;height:20px;
-    border-radius:50%;
-    background:var(--bg);
-    border:2px solid var(--accent);
-    display:grid;place-items:center;
-}
-
-.tl-dot::after{
-    content:"";
-    width:7px;height:7px;
-    border-radius:50%;
-    background:var(--accent);
-    box-shadow:0 0 12px var(--accent);
-    animation:pulse 2.4s infinite;
-}
-
-.tl-head{
-    display:flex;
-    justify-content:space-between;
-    align-items:baseline;
-    gap:18px;
-    flex-wrap:wrap;
-    margin-bottom:6px;
-}
-
-.tl-head h3{font-size:19px;font-weight:700;letter-spacing:-.3px}
-
-.tl-date{
-    font-family:'JetBrains Mono',monospace;
-    font-size:12.5px;
-    font-weight:500;
-    color:var(--accent);
-    background:var(--accent-soft);
-    padding:4px 12px;
-    border-radius:100px;
-    white-space:nowrap;
-}
-
-.tl-role{
-    font-size:13.5px;
-    font-weight:600;
-    color:var(--muted);
-    margin-bottom:12px;
-}
-
-.tl-item p{color:var(--muted);font-size:14.8px;margin-bottom:14px}
-
-.tl-tags{display:flex;flex-wrap:wrap;gap:7px}
 
 /* =========================================================
    PROJECTS
@@ -1844,6 +2586,10 @@ footer{
 /* =========================================================
    RESPONSIVE
    ========================================================= */
+@media (max-width:1200px){
+    .mini-card{width:210px;margin-left:-88px}
+}
+
 @media (max-width:1024px){
     .hero-grid{grid-template-columns:1fr;gap:46px}
     .hero-card{max-width:480px;margin-inline:auto}
@@ -1854,6 +2600,18 @@ footer{
     #codeCanvas{opacity:.55}
 
     .tree-branches{grid-template-columns:repeat(2,1fr)}
+
+    .mini-card{width:186px;height:var(--mini-h);margin-left:-80px;padding:20px}
+    .mini-icon svg{width:54px;height:54px}
+    .mini-title{font-size:17px}
+
+    .detail-card{padding:34px}
+    .detail-title{font-size:26px}
+    .detail-desc{font-size:15px}
+    .detail-icon{width:70px;height:70px;border-radius:18px}
+    .detail-icon svg{width:34px;height:34px}
+
+    .avatar{width:150px;height:150px}
 }
 
 @media (max-width:820px){
@@ -1886,6 +2644,56 @@ footer{
 
     .menu-btn{display:grid}
     .nav-actions .btn{display:none}
+
+    .exp-item{
+        grid-template-columns:56px 1fr;
+        min-height:auto;
+        padding:12px 0;
+    }
+
+    .exp-item .exp-node{ grid-column:1; }
+
+    .exp-item[data-side="left"] .exp-card,
+    .exp-item[data-side="right"] .exp-card{
+        grid-column:2;
+    }
+
+    .exp-item[data-side="left"] .exp-card{
+        transform:translateX(50px);
+    }
+
+    .exp-item.in-view[data-side="left"] .exp-card{
+        transform:translateX(0);
+    }
+
+    .exp-card{padding:22px}
+    .exp-card h3{font-size:18px}
+
+    .tech-hand{
+        justify-content:flex-start;
+        overflow-x:auto;
+        padding:34px 24px 20px;
+        scrollbar-width:thin;
+        scrollbar-color:var(--border-strong) transparent;
+    }
+
+    .tech-hand::-webkit-scrollbar{height:6px}
+    .tech-hand::-webkit-scrollbar-thumb{background:var(--border-strong);border-radius:6px}
+
+    .mini-card{width:170px;height:var(--mini-h);margin-left:-70px;padding:18px}
+    .mini-icon svg{width:50px;height:50px}
+    .mini-title{font-size:16px}
+    .mini-sub{font-size:10.5px}
+    .mini-bottom-pip{bottom:18px;right:18px;font-size:10.5px}
+
+    .detail-card{padding:28px;max-height:90vh}
+    .detail-head{gap:16px;padding-right:44px}
+    .detail-icon{width:60px;height:60px;border-radius:16px}
+    .detail-icon svg{width:28px;height:28px}
+    .detail-title{font-size:22px}
+    .detail-desc{font-size:15px}
+
+    .avatar{width:135px;height:135px}
 }
 
 @media (max-width:640px){
@@ -1903,27 +2711,73 @@ footer{
     .card,.contact-form,.contact-info{padding:24px}
     .hero-card{padding:26px}
 
-    .timeline{padding-left:30px}
-    .tl-dot{left:-30px;width:17px;height:17px}
-    .tl-dot::after{width:6px;height:6px}
-    .timeline::before{left:8px}
-
     .footer-top{flex-direction:column;align-items:flex-start}
 
     #top{right:16px;bottom:16px}
 
     #codeCanvas{opacity:.42}
 
-    /* Tree → simple vertical stack on mobile */
     .tree-branches{grid-template-columns:1fr;gap:16px}
     .tree-svg{display:none}
     .tree-root{margin-bottom:44px}
+
+    .mini-card{
+        width:142px;
+        height:var(--mini-h);
+        margin-left:-58px;
+        padding:16px;
+        border-radius:16px;
+    }
+    .mini-num,.mini-pip{font-size:11px}
+    .mini-pip{font-size:10px;padding:3px 6px}
+    .mini-icon svg{width:40px;height:40px}
+    .mini-title{font-size:14px}
+    .mini-sub{font-size:9.5px}
+    .mini-bottom-pip{bottom:16px;right:16px;font-size:10px}
+    .mini-top{margin-bottom:14px}
+    .mini-bottom{margin-top:14px}
+
+    .tech-modal{padding:14px}
+    .detail-card{padding:24px;max-height:88vh}
+    .detail-icon{width:52px;height:52px;border-radius:14px}
+    .detail-icon svg{width:24px;height:24px}
+    .detail-title{font-size:20px}
+    .detail-desc{font-size:14px;margin-bottom:18px}
+    .detail-tag{font-size:11.6px;padding:6px 11px}
+    .detail-stat{padding:14px 16px}
+    .detail-stat b{font-size:18px}
+    .detail-stat small{font-size:10.5px}
+    .detail-close{top:14px;right:14px;width:38px;height:38px}
+    .detail-head{padding-right:36px}
+
+    .avatar{
+        width:120px;
+        height:120px;
+        margin-bottom:18px;
+        box-shadow:
+            0 0 0 4px color-mix(in srgb, var(--accent) 45%, transparent),
+            0 0 0 8px color-mix(in srgb, var(--accent) 12%, transparent),
+            0 18px 40px rgba(0,0,0,.5),
+            0 0 55px rgba(56,189,248,.32);
+    }
+    .avatar-status{width:20px;height:20px;border-width:3px}
+    .hero-card h3{font-size:20px}
 }
 
 @media (prefers-reduced-motion:reduce){
     *{animation-duration:.01ms !important;transition-duration:.01ms !important;scroll-behavior:auto !important}
     .js .reveal{opacity:1;transform:none}
     .tree-svg path{transition:none}
+    .mini-card{opacity:1 !important;transform:none !important}
+    .tech-modal,
+    .tech-modal-backdrop,
+    .tech-modal-shell,
+    .detail-card{transition:none !important}
+    .exp-card,
+    .exp-item .exp-node-inner{transition:none !important}
+    .exp-item .exp-card{opacity:1 !important;transform:none !important}
+    .avatar{animation:none !important}
+    .avatar::before{animation:none !important}
 }
 </style>
 </head>
@@ -2051,7 +2905,21 @@ footer{
 
 
         <aside class="hero-card reveal d2">
-            <div class="avatar">US</div>
+
+            <div class="avatar">
+                <span class="avatar-fallback" aria-hidden="true">US</span>
+                <img
+                    class="avatar-img"
+                    src="https://media.licdn.com/dms/image/v2/D5603AQGci7nS2j_oIg/profile-displayphoto-scale_400_400/B56ZvuuxoAHAAg-/0/1769236798507?e=1792022400&v=beta&t=B-KS0cIAKJAu4FIHqTI8z12Aqzs-aPD9QrL5v62b8PA"
+                    alt="Uttam Singh — Full-Stack Developer"
+                    loading="eager"
+                    decoding="async"
+                    referrerpolicy="no-referrer"
+                    onerror="this.style.display='none'"
+                >
+                <span class="avatar-status" aria-label="Available"></span>
+            </div>
+
             <h3>Uttam Singh</h3>
             <div class="sub">Full-Stack Developer</div>
 
@@ -2221,10 +3089,8 @@ footer{
 
         <div class="tree-wrap reveal" id="treeWrap">
 
-            <!-- SVG connectors -->
             <svg class="tree-svg" id="treeSvg" aria-hidden="true"></svg>
 
-            <!-- Root -->
             <div class="tree-root">
                 <div class="root-node">
                     <span class="root-pulse"></span>
@@ -2235,7 +3101,6 @@ footer{
                 </div>
             </div>
 
-            <!-- Branches -->
             <div class="tree-branches">
 
                 <article class="tree-node" data-node="0" tabindex="0" role="button" aria-expanded="false">
@@ -2354,7 +3219,7 @@ footer{
 
 
 <!-- =========================
-     SKILLS
+     SKILLS — PLAYING CARD HAND + CENTERED MODAL
 ========================== -->
 <section id="skills">
     <div class="container">
@@ -2363,95 +3228,37 @@ footer{
             <span class="eyebrow">Tech Stack</span>
             <h2>Tools I work with daily</h2>
             <p>
-                A practical stack — chosen for reliability and long-term
-                maintainability, not hype.
+                Six cards in your hand. Click any card to open the full story
+                in a centered panel.
             </p>
         </div>
 
-        <div class="grid-3">
-
-            <article class="card skill-card reveal">
-                <h3><span class="num">01</span> WordPress</h3>
-                <div class="tags">
-                    <span class="tag">Custom Themes</span>
-                    <span class="tag">Custom Plugins</span>
-                    <span class="tag">ACF</span>
-                    <span class="tag">Gutenberg</span>
-                    <span class="tag">Elementor</span>
-                    <span class="tag">WooCommerce</span>
-                    <span class="tag">WP-CLI</span>
-                </div>
-            </article>
-
-            <article class="card skill-card reveal d1">
-                <h3><span class="num">02</span> Backend</h3>
-                <div class="tags">
-                    <span class="tag">PHP</span>
-                    <span class="tag">MySQL</span>
-                    <span class="tag">REST API</span>
-                    <span class="tag">Webhooks</span>
-                    <span class="tag">JSON</span>
-                    <span class="tag">Cron Jobs</span>
-                </div>
-            </article>
-
-            <article class="card skill-card reveal d2">
-                <h3><span class="num">03</span> Shopify</h3>
-                <div class="tags">
-                    <span class="tag">Liquid</span>
-                    <span class="tag">Dawn</span>
-                    <span class="tag">Custom Sections</span>
-                    <span class="tag">Metafields</span>
-                    <span class="tag">Storefront API</span>
-                    <span class="tag">App Integration</span>
-                </div>
-            </article>
-
-            <article class="card skill-card reveal">
-                <h3><span class="num">04</span> Frontend</h3>
-                <div class="tags">
-                    <span class="tag">HTML5</span>
-                    <span class="tag">CSS3</span>
-                    <span class="tag">JavaScript</span>
-                    <span class="tag">jQuery</span>
-                    <span class="tag">Responsive Design</span>
-                    <span class="tag">React Basics</span>
-                    <span class="tag">Vue Basics</span>
-                </div>
-            </article>
-
-            <article class="card skill-card reveal d1">
-                <h3><span class="num">05</span> Server &amp; DevOps</h3>
-                <div class="tags">
-                    <span class="tag">cPanel</span>
-                    <span class="tag">Plesk</span>
-                    <span class="tag">DNS</span>
-                    <span class="tag">SSL</span>
-                    <span class="tag">Git</span>
-                    <span class="tag">Staging Deploys</span>
-                    <span class="tag">Backups</span>
-                </div>
-            </article>
-
-            <article class="card skill-card reveal d2">
-                <h3><span class="num">06</span> Security &amp; Speed</h3>
-                <div class="tags">
-                    <span class="tag">Hardening</span>
-                    <span class="tag">Malware Removal</span>
-                    <span class="tag">Caching</span>
-                    <span class="tag">DB Optimisation</span>
-                    <span class="tag">API Security</span>
-                    <span class="tag">Core Web Vitals</span>
-                </div>
-            </article>
-
+        <div class="tech-stage reveal" id="techStage">
+            <div class="tech-hand" id="techHand" role="list"></div>
         </div>
+
+        <p class="deck-hint reveal">
+            <kbd>Click</kbd> a card to open it · <kbd>Esc</kbd> or the
+            <kbd>×</kbd> button closes the panel
+        </p>
+
     </div>
 </section>
 
 
 <!-- =========================
-     EXPERIENCE
+     TECH MODAL (centered overlay)
+========================== -->
+<div class="tech-modal" id="techModal" role="dialog" aria-modal="true" aria-hidden="true">
+    <div class="tech-modal-backdrop" id="techBackdrop"></div>
+    <div class="tech-modal-shell">
+        <div class="detail-card" id="techDetail"></div>
+    </div>
+</div>
+
+
+<!-- =========================
+     EXPERIENCE — VERTICAL TREE
 ========================== -->
 <section id="experience">
     <div class="container">
@@ -2459,76 +3266,80 @@ footer{
         <div class="section-head reveal">
             <span class="eyebrow">Experience</span>
             <h2>Professional journey</h2>
-            <p>Fourteen years of shipping, fixing and scaling web platforms.</p>
+            <p>
+                Fourteen years of shipping, fixing and scaling web platforms.
+            </p>
         </div>
 
-        <div class="timeline">
+        <div class="exp-tree" id="expTree">
 
-            <div class="tl-item reveal">
-                <span class="tl-dot"></span>
-                <div class="tl-head">
+            <svg class="exp-svg" id="expSvg" aria-hidden="true"></svg>
+
+            <div class="exp-item" data-side="left">
+                <div class="exp-node"><span class="exp-node-inner"></span></div>
+                <article class="exp-card">
+                    <span class="exp-date">2015 — Present</span>
                     <h3>Full-Stack WordPress Developer</h3>
-                    <span class="tl-date">2015 — Present</span>
-                </div>
-                <div class="tl-role">Custom Development · WooCommerce · CRM · Infrastructure</div>
-                <p>
-                    Lead developer on custom WordPress builds — bespoke themes,
-                    plugins, WooCommerce stores and in-house CRM platforms.
-                    Handle the full stack: database design, PHP architecture,
-                    API integrations, server configuration, security hardening
-                    and performance optimisation for production sites.
-                </p>
-                <div class="tl-tags">
-                    <span class="tag">WordPress</span>
-                    <span class="tag">PHP</span>
-                    <span class="tag">MySQL</span>
-                    <span class="tag">WooCommerce</span>
-                    <span class="tag">REST API</span>
-                </div>
+                    <div class="exp-role">Custom Development · WooCommerce · CRM · Infrastructure</div>
+                    <p>
+                        Lead developer on custom WordPress builds — bespoke themes,
+                        plugins, WooCommerce stores and in-house CRM platforms.
+                        Handle the full stack: database design, PHP architecture,
+                        API integrations, server configuration, security hardening
+                        and performance optimisation for production sites.
+                    </p>
+                    <div class="exp-tags">
+                        <span class="tag">WordPress</span>
+                        <span class="tag">PHP</span>
+                        <span class="tag">MySQL</span>
+                        <span class="tag">WooCommerce</span>
+                        <span class="tag">REST API</span>
+                    </div>
+                </article>
             </div>
 
-            <div class="tl-item reveal d1">
-                <span class="tl-dot"></span>
-                <div class="tl-head">
+            <div class="exp-item" data-side="right">
+                <div class="exp-node"><span class="exp-node-inner"></span></div>
+                <article class="exp-card">
+                    <span class="exp-date">4 Years</span>
                     <h3>Shopify Developer</h3>
-                    <span class="tl-date">4 Years</span>
-                </div>
-                <div class="tl-role">Liquid · Theme Customisation · eCommerce</div>
-                <p>
-                    Built and customised Shopify storefronts using Liquid —
-                    custom sections, product and collection templates,
-                    metafields, cart logic and third-party app integrations,
-                    with a focus on conversion-friendly layouts and clean
-                    theme architecture.
-                </p>
-                <div class="tl-tags">
-                    <span class="tag">Shopify</span>
-                    <span class="tag">Liquid</span>
-                    <span class="tag">Metafields</span>
-                    <span class="tag">JavaScript</span>
-                </div>
+                    <div class="exp-role">Liquid · Theme Customisation · eCommerce</div>
+                    <p>
+                        Built and customised Shopify storefronts using Liquid —
+                        custom sections, product and collection templates,
+                        metafields, cart logic and third-party app integrations,
+                        with a focus on conversion-friendly layouts and clean
+                        theme architecture.
+                    </p>
+                    <div class="exp-tags">
+                        <span class="tag">Shopify</span>
+                        <span class="tag">Liquid</span>
+                        <span class="tag">Metafields</span>
+                        <span class="tag">JavaScript</span>
+                    </div>
+                </article>
             </div>
 
-            <div class="tl-item reveal d2">
-                <span class="tl-dot"></span>
-                <div class="tl-head">
+            <div class="exp-item" data-side="left">
+                <div class="exp-node"><span class="exp-node-inner"></span></div>
+                <article class="exp-card">
+                    <span class="exp-date">Earlier</span>
                     <h3>WordPress Developer</h3>
-                    <span class="tl-date">Earlier</span>
-                </div>
-                <div class="tl-role">Themes · Plugins · Client Websites</div>
-                <p>
-                    Developed and maintained WordPress websites for a wide range
-                    of businesses — custom themes, plugin development, migrations,
-                    bug fixing and long-term maintenance. This is where the
-                    fundamentals were built: clean code, careful debugging and
-                    respect for the client's budget.
-                </p>
-                <div class="tl-tags">
-                    <span class="tag">WordPress</span>
-                    <span class="tag">PHP</span>
-                    <span class="tag">jQuery</span>
-                    <span class="tag">cPanel</span>
-                </div>
+                    <div class="exp-role">Themes · Plugins · Client Websites</div>
+                    <p>
+                        Developed and maintained WordPress websites for a wide range
+                        of businesses — custom themes, plugin development, migrations,
+                        bug fixing and long-term maintenance. This is where the
+                        fundamentals were built: clean code, careful debugging and
+                        respect for the client's budget.
+                    </p>
+                    <div class="exp-tags">
+                        <span class="tag">WordPress</span>
+                        <span class="tag">PHP</span>
+                        <span class="tag">jQuery</span>
+                        <span class="tag">cPanel</span>
+                    </div>
+                </article>
             </div>
 
         </div>
@@ -2895,7 +3706,7 @@ document.documentElement.classList.add('js');
 })();
 
 /* =========================================================
-   FALLING CODE RAIN — PHP · MySQL · Shopify Liquid
+   FALLING CODE RAIN
    ========================================================= */
 (function () {
     const canvas = document.getElementById('codeCanvas');
@@ -2956,25 +3767,19 @@ document.documentElement.classList.add('js');
 
     function resize() {
         dpr = Math.min(window.devicePixelRatio || 1, 2);
-
         const rect = canvas.getBoundingClientRect();
         W = Math.max(1, rect.width);
         H = Math.max(1, rect.height);
-
         canvas.width  = Math.floor(W * dpr);
         canvas.height = Math.floor(H * dpr);
-
         ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-
         cols = Math.ceil(W / FONT_SIZE);
         rows = Math.ceil(H / LINE_H);
-
         drops = new Array(cols).fill(0).map(() => Math.random() * -rows);
     }
 
     function draw(now) {
         raf = requestAnimationFrame(draw);
-
         if (now - lastDraw < FRAME_INTERVAL) return;
         lastDraw = now;
 
@@ -3000,7 +3805,6 @@ document.documentElement.classList.add('js');
                 ctx.shadowBlur = 0;
                 ctx.fillStyle = Math.random() > 0.6 ? palette.body : palette.tail;
             }
-
             ctx.fillText(ch, x, y);
         }
 
@@ -3019,17 +3823,14 @@ document.documentElement.classList.add('js');
         lastDraw = 0;
         raf = requestAnimationFrame(draw);
     }
-
     function stop() {
         if (raf) { cancelAnimationFrame(raf); raf = null; }
     }
-
     function drawStatic() {
         ctx.clearRect(0, 0, W, H);
         ctx.font = FONT_SIZE + 'px "JetBrains Mono", ui-monospace, monospace';
         ctx.textBaseline = 'top';
         ctx.fillStyle = palette.body;
-
         for (let i = 0; i < cols; i++) {
             const start = Math.floor(Math.random() * rows * 0.7);
             for (let j = start; j < Math.min(start + 6, rows); j++) {
@@ -3266,9 +4067,10 @@ document.documentElement.classList.add('js');
 /* =========================================================
    SERVICES TREE
    ---------------------------------------------------------
-   Draws animated SVG bezier connectors from the root node
-   down to each service node, then adds hover + expand
-   interactions.
+   The tree line animation only fires when the section actually
+   scrolls into view. A scroll-listener fallback runs alongside
+   the IntersectionObserver so the animation is guaranteed to
+   play at the right moment.
    ========================================================= */
 (function () {
     const wrap = document.getElementById('treeWrap');
@@ -3285,10 +4087,10 @@ document.documentElement.classList.add('js');
     let trunkPath = null;
     let nodePaths = [];
     let hasAnimated = false;
+    let treeTriggered = false;
 
     /* ---------- DRAW ---------- */
     function draw() {
-        // Skip drawing on mobile (SVG hidden via CSS)
         if (window.getComputedStyle(svg).display === 'none') {
             svg.innerHTML = '';
             trunkPath = null;
@@ -3300,17 +4102,15 @@ document.documentElement.classList.add('js');
         nodePaths = [];
         trunkPath = null;
 
-        const wrapRect   = wrap.getBoundingClientRect();
-        const rootRect   = rootNode.getBoundingClientRect();
+        const wrapRect = wrap.getBoundingClientRect();
+        const rootRect = rootNode.getBoundingClientRect();
 
-        // SVG fills the wrap; no viewBox → 1 unit = 1 CSS px (stable on expand)
         svg.setAttribute('width',  wrapRect.width);
         svg.setAttribute('height', wrapRect.height);
 
         const rootCX = rootRect.left - wrapRect.left + rootRect.width / 2;
         const rootBottomY = rootRect.bottom - wrapRect.top;
 
-        // Trunk: short vertical segment below the root
         const trunkLength = 44;
         const trunkBottomY = rootBottomY + trunkLength;
 
@@ -3319,12 +4119,11 @@ document.documentElement.classList.add('js');
                                     ' L ' + rootCX + ' ' + trunkBottomY);
         svg.appendChild(trunkPath);
 
-        // Branch paths: one per node, staggered fan-out from trunk bottom
         nodes.forEach(function (node, i) {
             const nodeRect = node.getBoundingClientRect();
             const nodeCX = nodeRect.left - wrapRect.left + nodeRect.width / 2;
-            const nodeTopY = nodeRect.top - wrapRect.top; // top edge of card
-            const endY = nodeTopY - 2;                    // ends at the top dot
+            const nodeTopY = nodeRect.top - wrapRect.top;
+            const endY = nodeTopY - 2;
 
             const startY = trunkBottomY;
             const midY = startY + (endY - startY) * 0.55;
@@ -3341,27 +4140,35 @@ document.documentElement.classList.add('js');
             nodePaths.push(path);
         });
 
-        // Prep for entrance animation
         prepareStrokeAnimation();
     }
 
-    /* ---------- STROKE ENTRANCE ---------- */
+    /* ---------- STROKE SETUP ---------- */
     function prepareStrokeAnimation() {
         const all = [];
         if (trunkPath) all.push(trunkPath);
         nodePaths.forEach(p => all.push(p));
+
+        // If already animated, keep paths visible
+        // (prevents re-hiding on later redraws).
+        if (hasAnimated) {
+            all.forEach(function (p) {
+                p.style.strokeDasharray = 'none';
+                p.style.strokeDashoffset = '0';
+            });
+            return;
+        }
 
         all.forEach(function (p) {
             try {
                 const len = p.getTotalLength();
                 p.style.strokeDasharray = len;
                 p.style.strokeDashoffset = len;
-            } catch (e) {
-                // ignore
-            }
+            } catch (e) {}
         });
     }
 
+    /* ---------- ANIMATE ---------- */
     function animateStrokes() {
         if (hasAnimated) return;
         hasAnimated = true;
@@ -3388,11 +4195,23 @@ document.documentElement.classList.add('js');
         });
     }
 
+    /* ---------- TRIGGER (only when tree is actually in view) ---------- */
+    function isTreeInView() {
+        const rect = wrap.getBoundingClientRect();
+        const vh = window.innerHeight || document.documentElement.clientHeight;
+        return rect.top < vh * 0.88 && rect.bottom > 0;
+    }
+
+    function triggerTree() {
+        if (treeTriggered) return;
+        treeTriggered = true;
+        setTimeout(animateStrokes, 240);
+    }
+
     /* ---------- INITIAL DRAW ---------- */
-    // Wait for fonts so text metrics are stable before measuring
     function initialDraw() {
         draw();
-        requestAnimationFrame(draw); // second pass catches any layout shift
+        requestAnimationFrame(draw);
     }
 
     if (document.fonts && document.fonts.ready) {
@@ -3401,18 +4220,18 @@ document.documentElement.classList.add('js');
         initialDraw();
     }
 
-    // Also redraw once the window fully loads (images etc.)
-    window.addEventListener('load', function () { draw(); });
+    window.addEventListener('load', function () {
+        draw();
+        if (isTreeInView()) triggerTree();
+    });
 
     /* ---------- RESIZE ---------- */
     let resizeTimer = null;
     window.addEventListener('resize', function () {
         clearTimeout(resizeTimer);
         resizeTimer = setTimeout(function () {
-            const wasAnimated = hasAnimated;
             draw();
-            if (wasAnimated) {
-                // Skip animation on resize — just show the paths
+            if (hasAnimated) {
                 const all = [];
                 if (trunkPath) all.push(trunkPath);
                 nodePaths.forEach(p => all.push(p));
@@ -3425,25 +4244,38 @@ document.documentElement.classList.add('js');
         }, 160);
     });
 
-    /* ---------- TRIGGER ANIMATION WHEN IN VIEW ---------- */
+    /* ---------- TRIGGER ON SCROLL INTO VIEW ---------- */
     if ('IntersectionObserver' in window) {
         const io = new IntersectionObserver(function (entries) {
             entries.forEach(function (entry) {
                 if (entry.isIntersecting) {
-                    // small delay so the section reveal finishes first
-                    setTimeout(animateStrokes, 260);
+                    triggerTree();
                     io.disconnect();
                 }
             });
-        }, { threshold: 0.15 });
+        }, { threshold: 0.05, rootMargin: '0px 0px -40px 0px' });
         io.observe(wrap);
-    } else {
-        animateStrokes();
     }
+
+    // Scroll-listener fallback — guarantees the animation fires when
+    // the tree enters the viewport, even if IO doesn't cooperate.
+    function scrollCheck() {
+        if (treeTriggered) {
+            window.removeEventListener('scroll', scrollCheck);
+            return;
+        }
+        if (isTreeInView()) {
+            triggerTree();
+            window.removeEventListener('scroll', scrollCheck);
+        }
+    }
+    window.addEventListener('scroll', scrollCheck, { passive: true });
+
+    // If the tree is already in view on first paint, trigger immediately.
+    if (isTreeInView()) triggerTree();
 
     /* ---------- NODE INTERACTIONS ---------- */
     nodes.forEach(function (node, i) {
-        // Hover → highlight its path
         node.addEventListener('mouseenter', function () {
             nodePaths.forEach(function (p, j) {
                 p.classList.toggle('active', j === i);
@@ -3453,7 +4285,6 @@ document.documentElement.classList.add('js');
             nodePaths.forEach(function (p) { p.classList.remove('active'); });
         });
 
-        // Click / keyboard → toggle expanded details
         function toggle() {
             const wasActive = node.classList.contains('active');
 
@@ -3465,7 +4296,6 @@ document.documentElement.classList.add('js');
             if (!wasActive) {
                 node.classList.add('active');
                 node.setAttribute('aria-expanded', 'true');
-                // keep the highlighted path in sync
                 nodePaths.forEach(function (p, j) {
                     p.classList.toggle('active', j === i);
                 });
@@ -3475,7 +4305,6 @@ document.documentElement.classList.add('js');
         }
 
         node.addEventListener('click', toggle);
-
         node.addEventListener('keydown', function (e) {
             if (e.key === 'Enter' || e.key === ' ') {
                 e.preventDefault();
@@ -3483,6 +4312,524 @@ document.documentElement.classList.add('js');
             }
         });
     });
+})();
+
+/* =========================================================
+   TECH STACK — PLAYING CARD HAND + CENTERED MODAL
+   ========================================================= */
+(function () {
+    const stage  = document.getElementById('techStage');
+    const hand   = document.getElementById('techHand');
+    const modal  = document.getElementById('techModal');
+    const backdr = document.getElementById('techBackdrop');
+    const detail = document.getElementById('techDetail');
+    if (!stage || !hand || !modal || !detail) return;
+
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    const STACK = [
+        {
+            num: '01',
+            pip: 'WP',
+            title: 'WordPress',
+            sub: 'CMS · Themes · Plugins',
+            icon: '<svg viewBox="0 0 24 24"><path d="M3 5h18v14H3z"/><path d="M3 10h18M8 5v14"/></svg>',
+            desc: 'Bespoke themes and plugins built from scratch — Gutenberg blocks, ACF-powered content models and admin dashboards tailored to how your team actually works.',
+            tools: ['Custom Themes', 'Custom Plugins', 'ACF', 'Gutenberg', 'Elementor', 'WooCommerce', 'WP-CLI'],
+            stats: [
+                { value: '12+', label: 'Years' },
+                { value: '80+', label: 'Sites Built' }
+            ]
+        },
+        {
+            num: '02',
+            pip: 'BE',
+            title: 'Backend',
+            sub: 'PHP · MySQL · REST',
+            icon: '<svg viewBox="0 0 24 24"><ellipse cx="12" cy="6" rx="8" ry="3"/><path d="M4 6v6c0 1.7 3.6 3 8 3s8-1.3 8-3V6"/><path d="M4 12v6c0 1.7 3.6 3 8 3s8-1.3 8-3v-6"/></svg>',
+            desc: 'Server-side logic that holds up under load — custom REST endpoints, efficient database queries, scheduled jobs and secure webhook handling.',
+            tools: ['PHP', 'MySQL', 'REST API', 'Webhooks', 'JSON', 'Cron Jobs'],
+            stats: [
+                { value: '14+', label: 'Years' },
+                { value: '100+', label: 'APIs Built' }
+            ]
+        },
+        {
+            num: '03',
+            pip: 'SH',
+            title: 'Shopify',
+            sub: 'Liquid · Themes · Apps',
+            icon: '<svg viewBox="0 0 24 24"><path d="M4 7l8-4 8 4v10l-8 4-8-4z"/><path d="M4 7l8 4 8-4M12 11v10"/></svg>',
+            desc: 'Custom Liquid sections, product and collection templates, metafields and third-party app integrations — built on Dawn or a bespoke theme.',
+            tools: ['Liquid', 'Dawn', 'Custom Sections', 'Metafields', 'Storefront API', 'App Integration'],
+            stats: [
+                { value: '4+', label: 'Years' },
+                { value: '25+', label: 'Stores' }
+            ]
+        },
+        {
+            num: '04',
+            pip: 'FE',
+            title: 'Frontend',
+            sub: 'HTML · CSS · JavaScript',
+            icon: '<svg viewBox="0 0 24 24"><path d="M3 4h18v12H3z"/><path d="M8 20h8M12 16v4"/></svg>',
+            desc: 'Pixel-accurate interfaces that feel right on every screen — semantic HTML, modern CSS layouts and vanilla JavaScript where it counts.',
+            tools: ['HTML5', 'CSS3', 'JavaScript', 'jQuery', 'Responsive Design', 'React Basics', 'Vue Basics'],
+            stats: [
+                { value: '14+', label: 'Years' },
+                { value: '150+', label: 'UIs Shipped' }
+            ]
+        },
+        {
+            num: '05',
+            pip: 'DV',
+            title: 'Server & DevOps',
+            sub: 'cPanel · DNS · Git',
+            icon: '<svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="6" rx="2"/><rect x="3" y="14" width="18" height="6" rx="2"/><path d="M7 7h.01M7 17h.01"/></svg>',
+            desc: 'The unglamorous work that keeps sites online — server setup, SSL, DNS, staging environments, version control and reliable backups.',
+            tools: ['cPanel', 'Plesk', 'DNS', 'SSL', 'Git', 'Staging Deploys', 'Backups'],
+            stats: [
+                { value: '14+', label: 'Years' },
+                { value: '200+', label: 'Deploys' }
+            ]
+        },
+        {
+            num: '06',
+            pip: 'SC',
+            title: 'Security & Speed',
+            sub: 'Hardening · Caching · CWV',
+            icon: '<svg viewBox="0 0 24 24"><path d="M12 2l8 4v6c0 5-3.4 8.8-8 10-4.6-1.2-8-5-8-10V6z"/><path d="M9 12l2 2 4-4"/></svg>',
+            desc: 'Malware cleanup, hardening, database optimisation, object caching and Core Web Vitals tuning — so your site stays fast and safe under load.',
+            tools: ['Hardening', 'Malware Removal', 'Caching', 'DB Optimisation', 'API Security', 'Core Web Vitals'],
+            stats: [
+                { value: '99%', label: 'Uptime' },
+                { value: '40%', label: 'Faster' }
+            ]
+        }
+    ];
+
+    STACK.forEach(function (item, i) {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'mini-card';
+        btn.dataset.index = i;
+        btn.setAttribute('role', 'listitem');
+        btn.setAttribute('aria-label', 'Open details for ' + item.title);
+        btn.innerHTML =
+            '<div class="mini-top">' +
+                '<span class="mini-num">' + item.num + '</span>' +
+                '<span class="mini-pip">' + item.pip + '</span>' +
+            '</div>' +
+            '<div class="mini-icon">' + item.icon + '</div>' +
+            '<div class="mini-bottom">' +
+                '<span class="mini-title">' + item.title + '</span>' +
+                '<span class="mini-sub">' + item.sub + '</span>' +
+            '</div>' +
+            '<span class="mini-bottom-pip">' + item.num + ' · ' + item.pip + '</span>';
+
+        btn.addEventListener('click', function () { openModal(i); });
+        btn.addEventListener('keydown', function (e) {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                openModal(i);
+            }
+        });
+
+        hand.appendChild(btn);
+    });
+
+    const miniCards = Array.from(hand.querySelectorAll('.mini-card'));
+
+    function applyFan() {
+        const n = miniCards.length;
+        if (!n) return;
+
+        miniCards.forEach(function (card, i) {
+            const t = n === 1 ? 0.5 : i / (n - 1);
+            const s = t * 2 - 1;
+            const rotate = s * 4.5;
+            const lift   = -Math.round((1 - Math.abs(s)) * 10);
+
+            card.style.setProperty('--fan-r', rotate.toFixed(2) + 'deg');
+            card.style.setProperty('--fan-y', lift + 'px');
+        });
+    }
+
+    applyFan();
+
+    let dealTimer = null;
+    let hasDealt  = false;
+
+    function dealIn() {
+        if (dealTimer) clearTimeout(dealTimer);
+        miniCards.forEach(function (card) { card.classList.remove('dealt'); });
+
+        dealTimer = setTimeout(function () {
+            miniCards.forEach(function (card, i) {
+                const delay = reduced ? 0 : i * 110;
+                setTimeout(function () {
+                    card.classList.add('dealt');
+                }, delay);
+            });
+        }, 80);
+
+        hasDealt = true;
+    }
+
+    function renderDetail(item) {
+        return '' +
+            '<button type="button" class="detail-close" aria-label="Close details">' +
+                '<svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>' +
+            '</button>' +
+
+            '<div class="detail-head">' +
+                '<div class="detail-icon">' + item.icon + '</div>' +
+                '<div>' +
+                    '<div class="detail-num">CARD ' + item.num + ' · ' + item.pip + '</div>' +
+                    '<h3 class="detail-title">' + item.title + '</h3>' +
+                    '<div class="detail-sub">' + item.sub + '</div>' +
+                '</div>' +
+            '</div>' +
+
+            '<p class="detail-desc">' + item.desc + '</p>' +
+
+            '<div class="detail-tags">' +
+                item.tools.map(function (t) {
+                    return '<span class="detail-tag">' + t + '</span>';
+                }).join('') +
+            '</div>' +
+
+            '<div class="detail-stats">' +
+                item.stats.map(function (s) {
+                    return '<div class="detail-stat">' +
+                        '<b>' + s.value + '</b>' +
+                        '<small>' + s.label + '</small>' +
+                    '</div>';
+                }).join('') +
+            '</div>';
+    }
+
+    let activeIndex = -1;
+    let isOpen = false;
+    let lastFocused = null;
+
+    function openModal(index) {
+        activeIndex = index;
+        lastFocused = document.activeElement;
+
+        detail.innerHTML = renderDetail(STACK[index]);
+
+        const closeBtn = detail.querySelector('.detail-close');
+        if (closeBtn) {
+            closeBtn.addEventListener('click', function (e) {
+                e.stopPropagation();
+                closeModal();
+            });
+        }
+
+        void modal.offsetWidth;
+        modal.classList.add('open');
+        modal.setAttribute('aria-hidden', 'false');
+        document.body.classList.add('modal-open');
+        isOpen = true;
+
+        miniCards.forEach(function (c, i) {
+            c.classList.toggle('active', i === activeIndex);
+        });
+
+        setTimeout(function () {
+            const cb = detail.querySelector('.detail-close');
+            if (cb) cb.focus({ preventScroll: true });
+        }, 80);
+    }
+
+    function closeModal() {
+        isOpen = false;
+        modal.classList.remove('open');
+        modal.setAttribute('aria-hidden', 'true');
+        document.body.classList.remove('modal-open');
+
+        miniCards.forEach(function (c) { c.classList.remove('active'); });
+
+        setTimeout(function () {
+            if (!isOpen) detail.innerHTML = '';
+        }, reduced ? 0 : 400);
+
+        if (lastFocused && typeof lastFocused.focus === 'function') {
+            try { lastFocused.focus({ preventScroll: true }); } catch (e) {}
+        }
+
+        activeIndex = -1;
+    }
+
+    if (backdr) {
+        backdr.addEventListener('click', closeModal);
+    }
+
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && isOpen) {
+            closeModal();
+        }
+    });
+
+    modal.addEventListener('keydown', function (e) {
+        if (!isOpen) return;
+
+        if (e.key === 'Tab') {
+            const focusables = modal.querySelectorAll(
+                'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+            );
+            if (!focusables.length) return;
+
+            const first = focusables[0];
+            const last  = focusables[focusables.length - 1];
+
+            if (e.shiftKey && document.activeElement === first) {
+                e.preventDefault();
+                last.focus();
+            } else if (!e.shiftKey && document.activeElement === last) {
+                e.preventDefault();
+                first.focus();
+            }
+        }
+    });
+
+    if ('IntersectionObserver' in window) {
+        const io = new IntersectionObserver(function (entries) {
+            entries.forEach(function (entry) {
+                if (entry.isIntersecting && !hasDealt) {
+                    dealIn();
+                    io.disconnect();
+                }
+            });
+        }, { threshold: 0.25 });
+        io.observe(stage);
+    } else {
+        dealIn();
+    }
+
+    let fanTimer = null;
+    window.addEventListener('resize', function () {
+        clearTimeout(fanTimer);
+        fanTimer = setTimeout(applyFan, 140);
+    });
+
+    if (reduced) {
+        miniCards.forEach(function (c) { c.classList.add('dealt'); });
+        hasDealt = true;
+    }
+
+})();
+
+/* =========================================================
+   EXPERIENCE — VERTICAL TREE
+   ========================================================= */
+(function () {
+    const tree = document.getElementById('expTree');
+    if (!tree) return;
+
+    const svg   = document.getElementById('expSvg');
+    const items = Array.from(tree.querySelectorAll('.exp-item'));
+
+    if (!svg || !items.length) return;
+
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    let spinePath = null;
+    let connectorPaths = [];
+    let spineAnimated = false;
+    let spineObserver = null;
+
+    function draw() {
+        svg.innerHTML = '';
+        connectorPaths = [];
+        spinePath = null;
+
+        const treeRect = tree.getBoundingClientRect();
+
+        svg.setAttribute('width',  treeRect.width);
+        svg.setAttribute('height', treeRect.height);
+        svg.setAttribute('viewBox',
+            '0 0 ' + treeRect.width + ' ' + treeRect.height);
+
+        const firstNode = items[0].querySelector('.exp-node');
+        const lastNode  = items[items.length - 1].querySelector('.exp-node');
+        if (!firstNode || !lastNode) return;
+
+        const fnRect = firstNode.getBoundingClientRect();
+        const lnRect = lastNode.getBoundingClientRect();
+
+        const spineX = fnRect.left - treeRect.left + fnRect.width / 2;
+        const spineTopY = fnRect.top - treeRect.top + fnRect.height / 2;
+        const spineBottomY = lnRect.top - treeRect.top + lnRect.height / 2;
+
+        spinePath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        spinePath.setAttribute('d',
+            'M ' + spineX + ' ' + spineTopY +
+            ' L ' + spineX + ' ' + spineBottomY);
+        spinePath.classList.add('spine');
+        svg.appendChild(spinePath);
+
+        items.forEach(function (item) {
+            const card = item.querySelector('.exp-card');
+            const node = item.querySelector('.exp-node');
+            if (!card || !node) {
+                connectorPaths.push(null);
+                return;
+            }
+
+            const cardRect = card.getBoundingClientRect();
+            const nodeRect = node.getBoundingClientRect();
+
+            const nodeY = nodeRect.top - treeRect.top + nodeRect.height / 2;
+            const cardCX = cardRect.left - treeRect.left + cardRect.width / 2;
+
+            const goesRight = cardCX > spineX;
+            const cardEdgeX = goesRight
+                ? (cardRect.left - treeRect.left)
+                : (cardRect.right - treeRect.left);
+
+            const midX = (spineX + cardEdgeX) / 2;
+            const archY = nodeY - 22;
+
+            const d = 'M ' + spineX + ' ' + nodeY +
+                      ' Q ' + midX + ' ' + archY +
+                      ' ' + cardEdgeX + ' ' + nodeY;
+
+            const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+            path.setAttribute('d', d);
+            path.classList.add('connector');
+            svg.appendChild(path);
+            connectorPaths.push(path);
+        });
+
+        prepareStrokes();
+    }
+
+    function prepareStrokes() {
+        if (spinePath) {
+            try {
+                const len = spinePath.getTotalLength();
+                spinePath.style.strokeDasharray = len;
+                spinePath.style.strokeDashoffset = spineAnimated ? '0' : len;
+            } catch (e) {}
+        }
+
+        items.forEach(function (item, i) {
+            const path = connectorPaths[i];
+            if (!path) return;
+
+            try {
+                const len = path.getTotalLength();
+                path.style.strokeDasharray = len;
+                path.style.strokeDashoffset =
+                    item.classList.contains('in-view') ? '0' : len;
+            } catch (e) {}
+        });
+    }
+
+    function animateSpine() {
+        if (!spinePath || spineAnimated) return;
+        spineAnimated = true;
+
+        if (reduced) {
+            spinePath.style.strokeDasharray = 'none';
+            spinePath.style.strokeDashoffset = '0';
+            return;
+        }
+
+        spinePath.style.transition =
+            'stroke-dashoffset 1.6s cubic-bezier(.22,.61,.36,1)';
+        spinePath.style.strokeDashoffset = '0';
+    }
+
+    function revealItem(item, index) {
+        if (item.classList.contains('in-view')) return;
+        item.classList.add('in-view');
+
+        const path = connectorPaths[index];
+        if (!path) return;
+
+        if (reduced) {
+            path.style.strokeDasharray = 'none';
+            path.style.strokeDashoffset = '0';
+            return;
+        }
+
+        setTimeout(function () {
+            path.style.transition =
+                'stroke-dashoffset 1.05s cubic-bezier(.22,.61,.36,1), ' +
+                'stroke .35s ease';
+            path.style.strokeDashoffset = '0';
+        }, 140);
+    }
+
+    function initialDraw() {
+        draw();
+        requestAnimationFrame(draw);
+    }
+
+    if (document.fonts && document.fonts.ready) {
+        document.fonts.ready.then(initialDraw);
+    } else {
+        initialDraw();
+    }
+
+    window.addEventListener('load', function () { draw(); });
+
+    let resizeTimer = null;
+    window.addEventListener('resize', function () {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(function () {
+            draw();
+            if (spineAnimated && spinePath) {
+                spinePath.style.transition = 'none';
+                spinePath.style.strokeDasharray = 'none';
+                spinePath.style.strokeDashoffset = '0';
+            }
+            items.forEach(function (item, i) {
+                const path = connectorPaths[i];
+                if (!path) return;
+                if (item.classList.contains('in-view')) {
+                    path.style.transition = 'none';
+                    path.style.strokeDasharray = 'none';
+                    path.style.strokeDashoffset = '0';
+                }
+            });
+        }, 160);
+    });
+
+    if ('IntersectionObserver' in window) {
+        spineObserver = new IntersectionObserver(function (entries) {
+            entries.forEach(function (entry) {
+                if (entry.isIntersecting) {
+                    setTimeout(animateSpine, 180);
+                    spineObserver.disconnect();
+                }
+            });
+        }, { threshold: 0.08 });
+        spineObserver.observe(tree);
+
+        const itemObserver = new IntersectionObserver(function (entries) {
+            entries.forEach(function (entry) {
+                if (entry.isIntersecting) {
+                    const idx = items.indexOf(entry.target);
+                    revealItem(entry.target, idx);
+                    itemObserver.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.2, rootMargin: '0px 0px -60px 0px' });
+
+        items.forEach(function (item) { itemObserver.observe(item); });
+    } else {
+        animateSpine();
+        items.forEach(function (item, i) { revealItem(item, i); });
+    }
+
+    if (reduced) {
+        items.forEach(function (item) { item.classList.add('in-view'); });
+    }
+
 })();
 
 /* =========================================================
